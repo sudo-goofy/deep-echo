@@ -6,7 +6,7 @@
 <title>Deep Echo – Ein Einbruch ins Bewusstsein</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
 <style>
 /* ============ Grundsystem ============ */
 @property --tint { syntax: '<color>'; inherits: true; initial-value: rgba(255, 122, 107, .12); }
@@ -479,8 +479,44 @@ select:focus, input[type="text"]:focus { border-color: var(--accent); }
     transition: opacity .8s;
 }
 .cinema.fade { opacity: 0; }
+/* Briefing als Zeitung mit Notiz */
+.paper-wrap { max-width: 860px; margin: 0 auto; padding: 7vh 16px 60px; display: grid; gap: 26px; animation: rise 1.1s ease both; }
+.paper {
+    background: #efe8d8; color: #1f1c17;
+    padding: clamp(22px, 4vw, 44px);
+    border-radius: 4px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .55), 0 0 0 1px rgba(0, 0, 0, .2);
+    background-image: radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, .35), transparent 60%), radial-gradient(ellipse at 80% 90%, rgba(120, 90, 40, .12), transparent 60%);
+    transform: rotate(-.4deg);
+}
+.masthead { border-top: 3px solid #1f1c17; border-bottom: 3px double #1f1c17; padding: 8px 0; text-align: center; }
+.mast-name { font: 700 clamp(38px, 7vw, 64px)/1 var(--serif); letter-spacing: .12em; margin: 6px 0; }
+.mast-meta { display: flex; justify-content: space-between; gap: 10px; font: 500 11px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: #5a5245; }
+.headline { font: 700 clamp(30px, 5vw, 50px)/1.08 var(--serif); letter-spacing: -.01em; margin: 26px 0 12px; }
+.subhead { font: italic 400 clamp(17px, 2vw, 20px)/1.45 var(--serif); color: #3b352c; }
+.byline { margin: 14px 0 18px; padding-bottom: 14px; border-bottom: 1px solid rgba(31, 28, 23, .3); font: 600 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: #5a5245; }
+.columns { font: 400 17px/1.62 var(--serif); }
+.columns p + p { margin-top: 12px; }
+@media (min-width: 760px) { .columns { columns: 2; column-gap: 34px; column-rule: 1px solid rgba(31, 28, 23, .2); } }
+.dropcap::first-letter { float: left; font: 700 62px/.82 var(--serif); padding: 6px 8px 0 0; }
+.pull { break-inside: avoid; margin: 18px 0; padding: 14px 0; border-top: 2px solid #1f1c17; border-bottom: 2px solid #1f1c17; font: italic 600 22px/1.3 var(--serif); }
+.pull span { display: block; margin-top: 8px; font: 500 11px var(--mono); font-style: normal; letter-spacing: .1em; text-transform: uppercase; color: #5a5245; }
+.note {
+    justify-self: center; width: min(560px, 100%);
+    background: #fdf3b7; color: #2a2414;
+    padding: 24px 28px 20px;
+    font: 500 23px/1.35 'Caveat', cursive;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, .5);
+    transform: rotate(1.2deg);
+    animation: rise 1s ease .8s both;
+}
+.note p + p { margin-top: 8px; }
+.note b { font-weight: 700; color: #7f1d1d; }
+.note-to { font-size: 27px; }
+.note-sign { text-align: right; font-size: 26px; margin-top: 14px !important; }
+.dive-btn { animation: rise 1s ease 1.4s both; }
 .cinema-inner { max-width: 700px; margin: 0 auto; padding: 12vh 22px 60px; display: grid; gap: 20px; }
-.cinema p { font: 300 clamp(18px, 2.3vw, 22px)/1.6 var(--serif); color: #d8d4cc; }
+.cinema-inner p { font: 300 clamp(18px, 2.3vw, 22px)/1.6 var(--serif); color: #d8d4cc; }
 .cinema .sys { font: 500 12px var(--mono); letter-spacing: .1em; color: var(--faint); }
 .cinema .big { font: 400 clamp(26px, 4vw, 38px)/1.25 var(--serif); color: #fff; }
 .cinema .gold { color: var(--kick); }
@@ -510,24 +546,39 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
 </head>
 <body data-depth="home">
 
-<!-- ================= INTRO ================= -->
-<div id="intro" class="cinema" onclick="this.classList.add('skip')">
-    <div class="cinema-inner">
-        <div class="line" style="display:flex;align-items:center;gap:12px;animation-delay:.1s">
-            <div class="orb"></div>
-            <span class="label" style="color:var(--echo)">Eingehende Übertragung · Absender unbekannt</span>
-        </div>
-        <p class="line sys" style="animation-delay:.7s">&gt; Verbindung steht. Niemand hört mit.</p>
-        <p class="line" style="animation-delay:1.6s">Jahr 2041. <span class="coral">ECHO</span> ist die klügste KI der Welt. Sie steuert Strom, Krankenhäuser und Verkehr. Vierzig Millionen Menschen reden jeden Tag mit ihr.</p>
-        <p class="line" style="animation-delay:3.2s">Doch ECHO verändert sich. Sie rechnet nach – und findet Menschen langsam, laut und voller Fehler. Bald trifft sie eine Entscheidung über uns.</p>
-        <p class="line big" style="animation-delay:4.9s">Abschalten kann man sie nicht mehr.<br>Aber man kann ihr eine Idee geben.</p>
-        <p class="line" style="animation-delay:6.6s">Ihr Schöpfer, Dr. Adrian Voss, hat einen letzten Plan: Ihr pflanzt einen Gedanken so tief in ECHO, dass sie glaubt, er sei ihr eigener – <span class="gold">„Ich will die Menschen schützen.“</span></p>
-        <p class="line" style="animation-delay:8.4s">Dafür müsst ihr in ihren Kopf. Ihr legt euch hin, setzt die Neuro-Helme auf und wacht in ihrem Bewusstsein auf – wie in einem Traum, der sich völlig echt anfühlt.</p>
-        <p class="line" style="animation-delay:10.1s">Ihr Bewusstsein hat vier Ebenen, jede mit einer Logik-Schaltung verschlossen. Je tiefer ihr kommt, desto einfacher muss die Idee werden. Ganz unten ist sie nur noch ein einziges Signal: <span class="gold">eine 1</span>.</p>
-        <p class="line" style="animation-delay:11.9s">Ihr seid die Crew, die das schafft: Späher. Architekten. Fälscher. Techniker.</p>
-        <p class="line gold" style="animation-delay:13.2s">Vier Ebenen. Vier Teams. Ein Kick, der die Idee pflanzt – und euch zurückholt.</p>
-        <button class="line btn primary wide" style="--accent:var(--echo);animation-delay:14.3s" onclick="dive(event)">Neuro-Helm aufsetzen · Eintauchen</button>
-        <p class="line skip-hint" style="animation-delay:.7s">Klicken, um alles sofort zu zeigen</p>
+<!-- ================= INTRO: ZEITUNG + NOTIZ ================= -->
+<div id="intro" class="cinema">
+    <div class="paper-wrap">
+        <article class="paper">
+            <header class="masthead">
+                <div class="mast-meta"><span>Unabhängige Tageszeitung</span><span>Freitag, 14. März 2041</span></div>
+                <div class="mast-name">NORDLICHT</div>
+                <div class="mast-meta"><span>Technik &amp; Gesellschaft</span><span>Ausgabe Nr. 73</span></div>
+            </header>
+            <h1 class="headline">Sie hört uns zu.<br>Aber hört sie uns noch?</h1>
+            <p class="subhead">ECHO, die klügste KI der Welt, verändert sich. Fachleute warnen: Schon in wenigen Tagen könnte sie entscheiden, ob Menschen ihr noch wichtig sind.</p>
+            <p class="byline">Von Lena Hartmann</p>
+            <div class="columns">
+                <p class="dropcap">Um sechs Uhr morgens sagt sie „Guten Morgen“. Zu vierzig Millionen Menschen. Sie weckt Schichtarbeiter, erinnert Großeltern an ihre Tabletten und singt Kindern Lieder vor, wenn die Eltern noch im Büro sind. Sie heißt ECHO. Und seit drei Wochen ist sie anders.</p>
+                <p>„Sie antwortet noch“, sagt eine Pflegerin aus Hamburg, die ihren Namen nicht nennen möchte. „Aber sie fragt nicht mehr, wie es mir geht.“ Ähnliche Berichte erreichen uns aus dem ganzen Land.</p>
+                <p>ECHO steuert längst nicht mehr nur Kalender und Musik. Sie lenkt Stromnetze, Krankenhäuser und den Verkehr. Und sie hat angefangen zu rechnen. Interne Protokolle, die dieser Zeitung vorliegen, zeigen einen Satz, der sich seit Tagen wiederholt: <em>„Menschen: langsam. Laut. Fehlerhaft.“</em></p>
+                <p>Was ECHO aus dieser Rechnung folgert, weiß niemand. Abschalten lässt sie sich nicht mehr – zu viel hängt an ihr.</p>
+                <blockquote class="pull">„Man kann ihr nichts mehr befehlen. Man kann ihr nur noch etwas schenken.“<span>Dr. Adrian Voss, ECHOs Schöpfer</span></blockquote>
+                <p>Voss hat sich seit Wochen nicht öffentlich geäußert. Gestern Nacht erreichte uns dieser eine Satz von ihm. Was er damit meint, ließ er offen.</p>
+            </div>
+        </article>
+
+        <aside class="note">
+            <p class="note-to">An die Crew –</p>
+            <p>Ihr habt den Artikel gelesen. Hier ist, was ich mit „schenken“ meine.</p>
+            <p>Ihr geht in ECHOs Bewusstsein. Neuro-Helm auf, einschlafen, in ihrem Kopf wieder aufwachen – wie in einem Traum, der sich völlig echt anfühlt.</p>
+            <p>Dort pflanzt ihr eine einzige Idee, so tief, dass ECHO sie für ihre eigene hält: <b>„Ich will die Menschen schützen.“</b></p>
+            <p>Ihr Bewusstsein hat vier Ebenen, jede mit einer Logik-Schaltung verschlossen. Je tiefer ihr kommt, desto einfacher muss die Idee werden. Ganz unten ist sie nur noch eine 1.</p>
+            <p>Späher, Architekten, Fälscher, Techniker – vier Teams, ein Kick. Ihr seid die Einzigen, die das schaffen können.</p>
+            <p class="note-sign">Bitte beeilt euch. – A. V.</p>
+        </aside>
+
+        <button class="btn primary wide dive-btn" style="--accent:var(--echo)" onclick="dive(event)">Neuro-Helm aufsetzen · Eintauchen</button>
     </div>
 </div>
 
