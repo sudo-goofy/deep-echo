@@ -234,6 +234,9 @@ main { padding: 36px 0 60px; }
 
 .hint-btn { all: unset; cursor: pointer; font: 500 12px var(--mono); color: var(--muted); border-bottom: 1px dotted; }
 .hint-btn:hover { color: var(--accent); }
+.hint-more { all: unset; cursor: pointer; display: inline-block; margin-top: 10px; font: 500 12px var(--mono); color: var(--muted); border-bottom: 1px dotted; }
+.hint-more:hover { color: var(--accent); }
+.hint2 { margin-top: 10px; padding-top: 10px; border-top: 1px dashed color-mix(in srgb, var(--accent) 35%, transparent); }
 .hint { margin-top: 12px; padding: 14px 16px; border-radius: 12px; background: color-mix(in srgb, var(--accent) 8%, transparent); border: 1px dashed color-mix(in srgb, var(--accent) 45%, transparent); font-size: 14px; }
 
 /* ============ Oberfläche (Start) ============ */
@@ -760,9 +763,8 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
             <p class="mission-goal">Findet die Wege, auf denen ihr die Idee unbemerkt zur Schwelle bringt.</p>
             <ol class="steps">
                 <li>Lest, worauf ECHO achtet.</li>
-                <li>Wählt die drei passenden Gatter für ECHOs Schaltung.</li>
-                <li>Prüft im Simulator, ob eure Schaltung den Regeln folgt.</li>
-                <li>Stellt jeden Weg als 0 und 1 ein und lest Q ab.</li>
+                <li>Wählt die drei Gatter – Schaltzeichen und Wahrheitstabellen findet ihr auf der <button type="button" class="term" onclick="openSheet('karte')">◇ Karte</button>.</li>
+                <li>Testet die Schaltung, dann stellt jeden Weg ein und lest Q ab.</li>
             </ol>
         </div>
     </div>
@@ -770,9 +772,9 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
     <div class="card">
         <div class="task-head"><h3>Worauf ECHO achtet</h3><button class="hint-btn" onclick="openHelp('help-1', 'Wann wird ECHO misstrauisch?')">Hilfe: Wir kommen nicht weiter</button></div>
         <ol class="steps rules">
-            <li><div><b>Der Anker muss halten (A).</b> Der <button type="button" class="term" onclick="openTerm('anker')">Anker</button> ist eure Verbindung nach draußen. Reißt er, werdet ihr aus dem Traum geworfen – die Tür bleibt zu.</div></li>
-            <li><div><b>Sehen (B) und Hören (C) müssen zusammenpassen.</b> ECHO vergleicht ständig, was sie sieht, mit dem, was sie hört. Passt beides nicht zusammen, wird sie misstrauisch: Ihr <button type="button" class="term" onclick="openTerm('dissonanz')">Dissonanz-Detektor</button> meldet eine 1.</div></li>
-            <li><div><b>Alarm gibt es, sobald etwas verdächtig ist</b> – also bei Dissonanz, bei einer Berührung einer Projektion (D) oder bei beidem.</div></li>
+            <li><div><b>Der <button type="button" class="term" onclick="openTerm('anker')">Anker</button> muss halten (A).</b> Reißt er, fliegt ihr raus – die Tür bleibt zu.</div></li>
+            <li><div><b>Sehen (B) und Hören (C) müssen zusammenpassen.</b> Sonst meldet der <button type="button" class="term" onclick="openTerm('dissonanz')">Dissonanz-Detektor</button> eine 1.</div></li>
+            <li><div><b>Alarm</b> gibt es bei Dissonanz <em>oder</em> wenn jemand eine Projektion berührt (D).</div></li>
         </ol>
         <p class="mission-goal" style="margin:16px 0 0;font:400 18px/1.45 var(--serif)">Die Tür (Q) öffnet sich nur, wenn der Anker hält <em>und</em> es keinen Alarm gibt.</p>
 
@@ -796,7 +798,7 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
 
     <div class="card">
         <div class="task-head"><h3>ECHOs Wachsamkeit</h3><span class="label">Schaltung bauen · dann testen</span></div>
-        <p class="small muted">Euer Architekt hat die Leitungen abgezeichnet – aber nicht erkannt, welche Gatter in den drei Kästen sitzen. Wählt unter dem Plan für jedes Gatter ein Schaltzeichen. Danach könnt ihr links A, B, C und D anklicken (0 ↔ 1). Leuchtende Leitungen führen eine 1. Der kleine Kreis vor dem Schwellen-Gatter dreht das Signal um: Aus „Alarm“ wird „kein Alarm“.</p>
+        <p class="small muted">Wählt unten für jedes Gatter ein Schaltzeichen, dann klickt links A–D an (0 ↔ 1). Leuchtende Leitungen führen eine 1. Der Kreis vor G3 dreht das Signal um: aus „Alarm“ wird „kein Alarm“.</p>
         <div class="svg-box">
             <svg viewBox="0 0 640 272" role="img" aria-label="Schaltung der ersten Ebene">
                 <!-- Eingänge -->
@@ -852,8 +854,9 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
         <div class="task-head"><h3>Die vier Wege</h3><button class="hint-btn" onclick="toggleHint('1')">Hinweis der Crew</button></div>
         <p class="muted small">Die Berichte eurer Späher. Auf welchen Wegen öffnet sich die Tür?</p>
         <div class="hint" id="hint-1" hidden>
-            <b>Gatter wählen:</b> Nehmt euch die Regeln einzeln vor. Überlegt für G1 alle vier Fälle: Was sieht und hört ECHO – und wann wird sie misstrauisch? Sucht dann auf der ◇ Karte das Gatter mit genau dieser Wahrheitstabelle. Achtet bei G2 und G3 auf die kleinen Wörter in den Regeln: „oder“, „und“. Testet jedes Gatter im Simulator, bevor ihr weitermacht.<br><br>
-            <b>Wege übersetzen:</b> <b>hält / sieht / hört / streift</b> = 1 – <b>reißt / unsichtbar / lautlos / berührt niemanden</b> = 0.
+            <p><b>Tipp 1:</b> Jede Regel gehört zu einem Gatter. Achtet auf die kleinen Wörter „oder“ und „und“. Bei den Wegen ist jedes Signal entweder da (1) oder nicht da (0).</p>
+            <button type="button" class="hint-more" id="hint-1-more" onclick="hint2('1')">Noch ein Tipp? (ECHO wird misstrauischer)</button>
+            <p class="hint2" id="hint-1-2" hidden><b>Tipp 2:</b> G2: Alarm bei Dissonanz <b>oder</b> Berührung. G3: Tür offen, wenn der Anker hält <b>und</b> kein Alarm ist. Für G1 spielt alle vier Fälle von Sehen und Hören durch: Wann wird ECHO misstrauisch? Sucht auf der ◇ Karte das Gatter mit genau dieser Wahrheitstabelle. Wege übersetzen: <b>hält / sieht / hört / streift</b> = 1 – <b>reißt / unsichtbar / lautlos / berührt niemanden</b> = 0.</p>
         </div>
         <div style="overflow-x:auto;margin-top:12px">
             <table>
@@ -892,7 +895,7 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
             <span class="label">Euer Auftrag</span>
             <p class="mission-goal">Findet für jeden Gedanken die richtige Tür.</p>
             <ol class="steps">
-                <li>Löst die „nicht“ mit den <button type="button" class="term" onclick="openTerm('demorgan')">Gesetzen von De Morgan</button> auf.</li>
+                <li>Löst die „nicht“ mit den <button type="button" class="term" onclick="openTerm('demorgan')">Gesetzen von De Morgan</button> auf (auch auf der <button type="button" class="term" onclick="openSheet('karte')">◇ Karte</button>).</li>
                 <li>Vergleicht das Ergebnis mit den vier Türen.</li>
                 <li>Die Türnummern zu den Gedanken I bis IV ergeben euren Code.</li>
             </ol>
@@ -912,9 +915,9 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
             <li><b>B</b> – ECHO hat Angst vor Menschen (1)</li>
         </ul>
         <div class="hint" id="hint-2" hidden>
-            <span class="rule"><span class="neg">A ∧ B</span> = <span class="neg">A</span> ∨ <span class="neg">B</span></span>
-            <span class="rule"><span class="neg">A ∨ B</span> = <span class="neg">A</span> ∧ <span class="neg">B</span></span>
-            Löst immer zuerst den <em>langen</em> Strich auf: Er zerbricht in einzelne Striche, und das Zeichen dreht sich um. Zwei Striche übereinander heben sich auf: <span class="mono"><span class="neg"><span class="neg">A</span></span> = A</span>. Prüft euer Ergebnis mit den Wahrheitstabellen oben.
+            <p><b>Tipp 1:</b> Ein langer Strich über einem ganzen Ausdruck lässt sich auflösen: Er zerbricht in einzelne Striche – und dabei dreht sich das Zeichen um. Die Regeln stehen auf der ◇ Karte unter „Gesetze von De Morgan“.</p>
+            <button type="button" class="hint-more" id="hint-2-more" onclick="hint2('2')">Noch ein Tipp? (ECHO wird misstrauischer)</button>
+            <p class="hint2" id="hint-2-2" hidden><b>Tipp 2:</b> <span class="rule"><span class="neg">A ∧ B</span> = <span class="neg">A</span> ∨ <span class="neg">B</span></span><span class="rule"><span class="neg">A ∨ B</span> = <span class="neg">A</span> ∧ <span class="neg">B</span></span>Zwei Striche übereinander heben sich auf: <span class="mono"><span class="neg"><span class="neg">A</span></span> = A</span>. Beispiel: <span class="mono"><span class="neg"><span class="neg">A</span> ∧ B</span> = A ∨ <span class="neg">B</span></span>. Vergleicht euer Ergebnis danach mit den Wahrheitstabellen der Türen.</p>
         </div>
         <div class="stack" style="margin-top:14px">
             <div class="thought">
@@ -959,7 +962,7 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
             <ol class="steps">
                 <li>Lest ECHOs Regel.</li>
                 <li>Auftrag A: Füllt die Wahrheitstabelle aus.</li>
-                <li>Auftrag B: Baut die Schaltung aus zwei Gattern.</li>
+                <li>Auftrag B: Baut die Schaltung aus zwei Gattern – Schaltzeichen auf der <button type="button" class="term" onclick="openSheet('karte')">◇ Karte</button>.</li>
             </ol>
         </div>
     </div>
@@ -981,7 +984,11 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
     <div class="card task">
         <div class="task-head"><h3>Auftrag A · Die Wahrheitstabelle</h3><button class="hint-btn" onclick="toggleHint('3')">Hinweis der Crew</button></div>
         <p class="muted small">Klickt in der Spalte Q jede Zeile an (0 ↔ 1). Drei Eingänge ergeben 2³ = 8 Zeilen, siehe <button type="button" class="term" onclick="openTerm('wahrheitstabelle')">Wahrheitstabelle</button>.</p>
-        <div class="hint" id="hint-3" hidden>Zerlegt ECHOs Text: „nur jemandem, dem ich vertraue … doch“ ist die <b>äußere</b> Verknüpfung – V muss in jedem Fall 1 sein. Für Stimme und Erinnerung gilt: eins von beiden ja, beide zugleich nein, keins von beiden auch nein. Welches Gatter auf der ◇ Karte verhält sich genau so?</div>
+        <div class="hint" id="hint-3" hidden>
+            <p><b>Tipp 1:</b> Zerlegt ECHOs Regel in zwei Teile: Was muss <em>immer</em> erfüllt sein? Und was gilt für Stimme und Erinnerung? Füllt zuerst die Zeilen mit V = 0 aus – dort ist die Antwort einfach.</p>
+            <button type="button" class="hint-more" id="hint-3-more" onclick="hint2('3')">Noch ein Tipp? (ECHO wird misstrauischer)</button>
+            <p class="hint2" id="hint-3-2" hidden><b>Tipp 2:</b> V ist die äußere Bedingung – ohne Vertrauen bleibt Q immer 0. Für Stimme und Erinnerung gilt: eins von beiden ja, beide zugleich nein, keins von beiden auch nein. Welches Gatter auf der ◇ Karte verhält sich genau so?</p>
+        </div>
         <div style="overflow-x:auto;margin-top:12px">
             <table class="tt" style="max-width:420px;margin:0 auto">
                 <thead><tr><th>V</th><th>S</th><th>E</th><th style="color:var(--accent)">Q</th></tr></thead>
@@ -1043,7 +1050,7 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
             <ol class="steps">
                 <li>Stellt alle 8 Kombinationen von R, G und M ein. Das Protokoll notiert die Ist-Werte.</li>
                 <li>Sucht die Zeile, in der Ist und Soll verschieden sind.</li>
-                <li>Bestimmt den falschen Chip und lötet den richtigen ein.</li>
+                <li>Bestimmt den falschen Chip und lötet den richtigen ein. Wie sich die Gatter verhalten, zeigt die <button type="button" class="term" onclick="openSheet('karte')">◇ Karte</button>.</li>
             </ol>
         </div>
     </div>
@@ -1104,7 +1111,11 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
         </div>
         <div class="card task">
             <div class="task-head"><h3>Reparatur</h3><button class="hint-btn" onclick="toggleHint('4')">Hinweis der Crew</button></div>
-            <div class="hint" id="hint-4" hidden>Stellt nacheinander alle acht Kombinationen ein, bis das Messprotokoll voll ist. Sucht dann die Zeile, in der Soll und Ist verschieden sind. Verfolgt in genau dieser Zeile das Signal: Welcher Baustein liefert dort etwas anderes, als der Bauplan („oder beides“) verlangt? Die ◇ Karte zeigt euch, welches Gatter sich so verhält.</div>
+            <div class="hint" id="hint-4" hidden>
+            <p><b>Tipp 1:</b> Stellt nacheinander alle acht Kombinationen ein, bis das Messprotokoll voll ist. Erst dann vergleicht ihr Soll und Ist Zeile für Zeile.</p>
+            <button type="button" class="hint-more" id="hint-4-more" onclick="hint2('4')">Noch ein Tipp? (ECHO wird misstrauischer)</button>
+            <p class="hint2" id="hint-4-2" hidden><b>Tipp 2:</b> In der Fehlerzeile sind R und G beide 1. Der Bauplan sagt „oder beides“ – IC1 müsste dort also eine 1 liefern. Welches Gatter auf der ◇ Karte gibt bei 1 und 1 eine 0 aus, und welches eine 1?</p>
+        </div>
             <div class="stack" style="margin-top:12px">
                 <label class="field"><span>1 · In welcher Zeile weicht die Platine vom Bauplan ab?</span>
                     <select id="l4-row"><option value="">Zeile wählen …</option></select></label>
@@ -1413,6 +1424,8 @@ function go(id, silent) {
 }
 
 function toggleHint(n) { sfx('click'); const h = $('hint-' + n); h.hidden = !h.hidden; }
+// Zweiter Tipp kostet etwas: ECHO wird misstrauischer
+function hint2(n) { sfx('click'); $('hint-' + n + '-2').hidden = false; $('hint-' + n + '-more').hidden = true; notice(8); }
 
 /* ============ ECHO bemerkt euch ============ */
 function notice(delta) {
