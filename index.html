@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Echo – Ein Einbruch ins Bewusstsein</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============ Grundsystem ============ */
+@property --tint { syntax: '<color>'; inherits: true; initial-value: rgba(255, 122, 107, .12); }
+
+:root {
+    --bg: #07080d;
+    --surface: #0f121b;
+    --surface-2: #161a26;
+    --line: #232838;
+    --line-2: #333a52;
+    --text: #ece8e0;
+    --muted: #9399ae;
+    --faint: #5f667c;
+    --echo: #ff7a6b;
+    --l1: #6ee7c8;
+    --l2: #a78bfa;
+    --l3: #fb7185;
+    --l4: #fbbf24;
+    --kick: #fde68a;
+    --ok: #6ee7b7;
+    --bad: #f87171;
+    --accent: var(--echo);
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Inter', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    font: 15px/1.6 var(--sans);
+    --tint: rgba(255, 122, 107, .12);
+    background:
+        radial-gradient(1100px 620px at 50% -12%, var(--tint), transparent 70%),
+        radial-gradient(900px 500px at 50% 115%, rgba(110, 231, 200, .04), transparent 70%),
+        var(--bg);
+    background-attachment: fixed;
+    transition: --tint 1.2s ease;
+}
+body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 100; opacity: .06;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+body[data-depth="1"] { --accent: var(--l1); --tint: rgba(110, 231, 200, .13); }
+body[data-depth="2"] { --accent: var(--l2); --tint: rgba(167, 139, 250, .14); }
+body[data-depth="3"] { --accent: var(--l3); --tint: rgba(251, 113, 133, .15); }
+body[data-depth="4"] { --accent: var(--l4); --tint: rgba(251, 191, 36, .09); }
+body[data-depth="kick"] { --accent: var(--kick); --tint: rgba(253, 230, 138, .12); }
+
+.lvl-1 { --accent: var(--l1); }
+.lvl-2 { --accent: var(--l2); }
+.lvl-3 { --accent: var(--l3); }
+.lvl-4 { --accent: var(--l4); }
+.lvl-kick { --accent: var(--kick); }
+
+h1, h2, h3, h4 { margin: 0; font-weight: 400; }
+p { margin: 0; }
+em { font-style: italic; }
+b, strong { font-weight: 600; color: #fff; }
+
+.label {
+    font: 500 11px/1.4 var(--mono);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.mono { font-family: var(--mono); }
+.small { font-size: 13px; }
+.muted { color: var(--muted); }
+.accent { color: var(--accent); }
+
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+
+/* ============ Buttons ============ */
+.btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    padding: .7rem 1.1rem;
+    font: 600 12px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: border-color .2s, background .2s, color .2s, box-shadow .2s;
+}
+.btn:hover { border-color: var(--accent); color: #fff; }
+.btn:focus-visible, .chip:focus-visible, .term:focus-visible, .toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.btn.primary {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: #fff;
+}
+.btn.primary:hover { background: color-mix(in srgb, var(--accent) 26%, transparent); box-shadow: 0 0 28px color-mix(in srgb, var(--accent) 35%, transparent); }
+.btn.wide { width: 100%; padding: 1rem; font-size: 13px; }
+.btn:disabled { opacity: .35; cursor: not-allowed; box-shadow: none; }
+
+.chip {
+    display: inline-flex; align-items: center; gap: .4rem;
+    padding: .4rem .75rem;
+    font: 500 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: color .2s, border-color .2s;
+}
+.chip:hover { color: var(--text); border-color: var(--line-2); }
+
+.term {
+    all: unset;
+    cursor: pointer;
+    color: var(--accent);
+    border-bottom: 1px dotted currentColor;
+    transition: color .2s;
+}
+.term:hover { color: #fff; }
+
+/* ============ Kopfzeile ============ */
+.topbar {
+    position: sticky; top: 0; z-index: 40;
+    background: rgba(7, 8, 13, .78);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+}
+.topbar .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; padding-top: 10px; padding-bottom: 10px; }
+@media (max-width: 640px) { .topbar { position: static; } }
+.brand {
+    all: unset; cursor: pointer;
+    display: flex; align-items: center; gap: .6rem;
+    font: 700 13px var(--mono); letter-spacing: .28em;
+}
+.depth { display: flex; align-items: baseline; gap: .5rem; }
+.depth #depth-text { font: 500 13px var(--mono); color: var(--accent); transition: color .6s; }
+.meter { display: flex; align-items: center; gap: .55rem; }
+.meter-track { width: 72px; height: 4px; background: var(--line); border-radius: 4px; overflow: hidden; }
+#meter-fill { height: 100%; width: 4%; background: linear-gradient(90deg, #fda4af, var(--echo)); transition: width .8s ease; }
+#meter-text { font: 500 12px var(--mono); color: var(--echo); min-width: 6.5em; }
+.tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-left: auto; }
+
+/* ============ ECHO ============ */
+.orb {
+    width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%;
+    background: radial-gradient(circle at 35% 32%, #ffe4de, var(--echo) 46%, #7f1d1d 85%);
+    animation: breathe 3.4s ease-in-out infinite;
+}
+.orb-xs { width: 12px; height: 12px; }
+@keyframes breathe {
+    0%, 100% { transform: scale(.93); box-shadow: 0 0 10px rgba(255, 122, 107, .35); }
+    50% { transform: scale(1.05); box-shadow: 0 0 26px rgba(255, 122, 107, .7); }
+}
+.orb-xl { width: 112px; height: 112px; position: relative; }
+.orb-xl::before, .orb-xl::after {
+    content: ''; position: absolute; inset: -14px; border-radius: 50%;
+    border: 1px solid rgba(255, 122, 107, .35);
+    animation: ripple 4.2s ease-out infinite;
+}
+.orb-xl::after { animation-delay: 2.1s; }
+@keyframes ripple { from { transform: scale(.85); opacity: .9; } to { transform: scale(1.7); opacity: 0; } }
+
+.echo {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 18px 20px;
+    border: 1px solid rgba(255, 122, 107, .22);
+    background: linear-gradient(135deg, rgba(255, 122, 107, .08), rgba(255, 122, 107, .02));
+    border-radius: 18px;
+}
+.echo .label { color: var(--echo); }
+.echo-text { font: italic 400 18px/1.55 var(--serif); color: #ffe9e4; margin-top: 4px; }
+
+/* ============ Layout & Karten ============ */
+main { padding: 36px 0 60px; }
+.view { animation: surface .7s ease both; }
+@keyframes surface { from { opacity: 0; transform: translateY(14px); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+
+.card {
+    background: rgba(15, 18, 27, .82);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 22px;
+}
+.card + .card, .stack > * + * { margin-top: 18px; }
+.grid { display: grid; gap: 16px; }
+@media (min-width: 760px) {
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+}
+.story p + p { margin-top: 12px; }
+.story { font-size: 15.5px; }
+.mission {
+    margin-top: 20px; padding: 18px 20px; border-radius: 14px;
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+.mission .label { color: var(--accent); }
+.story .mission-goal { font: 400 20px/1.4 var(--serif); color: #fff; margin: 6px 0 12px; }
+.steps { margin: 0; padding: 0; list-style: none; counter-reset: step; display: grid; gap: 8px; }
+/* Nummer absolut positioniert, damit Links im Satz normaler Fließtext bleiben */
+.steps li { counter-increment: step; position: relative; padding-left: 36px; min-height: 24px; font-size: 14.5px; }
+.rules li { font-size: 15px; }
+.sense { font-size: 14px; }
+.sense td { padding: 10px; }
+.sense td:nth-child(3) { font: italic 15px var(--serif); color: #ffe0da; }
+.sense .calm { color: var(--ok); font-family: var(--mono); font-size: 13px; }
+.sense .alarm { color: var(--bad); font-family: var(--mono); font-size: 13px; }
+.steps li::before {
+    content: counter(step);
+    position: absolute; left: 0; top: 0;
+    display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%;
+    border: 1px solid var(--accent); color: var(--accent); font: 600 12px var(--mono);
+}
+.defs { list-style: none; padding: 0; margin: 14px 0; display: grid; gap: 8px; }
+@media (min-width: 640px) { .defs { grid-template-columns: 1fr 1fr; } }
+.defs li { padding: 10px 14px; background: var(--surface-2); border-radius: 12px; border-left: 2px solid var(--accent); font-size: 14px; }
+.defs b { font-family: var(--mono); color: var(--accent); }
+
+.task { border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
+.task-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.task-head h3 { font: 400 22px var(--serif); }
+
+.hint-btn { all: unset; cursor: pointer; font: 500 12px var(--mono); color: var(--muted); border-bottom: 1px dotted; }
+.hint-btn:hover { color: var(--accent); }
+.hint { margin-top: 12px; padding: 14px 16px; border-radius: 12px; background: color-mix(in srgb, var(--accent) 8%, transparent); border: 1px dashed color-mix(in srgb, var(--accent) 45%, transparent); font-size: 14px; }
+
+/* ============ Oberfläche (Start) ============ */
+.hero { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 22px; padding: 18px 0 8px; }
+.hero .echo-quote { font: italic 300 clamp(22px, 3.4vw, 32px)/1.35 var(--serif); color: #ffe9e4; max-width: 640px; }
+.hero .label { color: var(--echo); }
+.title { font: 300 clamp(40px, 7vw, 76px)/1 var(--serif); letter-spacing: -.02em; text-align: center; margin-top: 46px; }
+.title em { color: var(--echo); }
+.lead { max-width: 680px; margin: 20px auto 0; text-align: center; color: #c9c6c0; font-size: 16.5px; }
+.plan { margin-top: 40px; }
+.plan .card h3 { font: 400 20px var(--serif); margin: 6px 0 8px; }
+.plan .card p { color: #c9c6c0; font-size: 14.5px; }
+
+.how { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; counter-reset: none; }
+@media (min-width: 640px) { .how { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 980px) { .how { grid-template-columns: repeat(4, 1fr); } }
+.how .card { margin: 0; position: relative; }
+.how h3 { font: 400 21px var(--serif); margin: 10px 0 6px; }
+.how p { color: #c9c6c0; font-size: 14.5px; }
+.how-n {
+    display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
+    border: 1px solid var(--echo); color: var(--echo); font: 600 15px var(--mono);
+}
+.how-notes { display: grid; gap: 8px; margin-top: 16px; color: #c9c6c0; font-size: 14.5px; }
+.coral-text { color: var(--echo); }
+.section-title { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 54px 0 18px; flex-wrap: wrap; }
+.section-title h2 { font: 300 32px var(--serif); }
+
+.descent { display: grid; gap: 12px; }
+.layer {
+    all: unset; cursor: pointer; box-sizing: border-box;
+    display: grid; grid-template-columns: 74px 1fr; gap: 18px; align-items: center;
+    padding: 20px 22px;
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 10%, transparent), rgba(15, 18, 27, .85) 45%);
+    transition: transform .25s, border-color .25s, box-shadow .25s;
+}
+.layer:hover { transform: translateX(6px); border-color: color-mix(in srgb, var(--accent) 55%, transparent); box-shadow: 0 0 34px color-mix(in srgb, var(--accent) 14%, transparent); }
+.layer:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (min-width: 760px) {
+    .layer:nth-child(2) { margin-left: 28px; }
+    .layer:nth-child(3) { margin-left: 56px; }
+    .layer:nth-child(4) { margin-left: 84px; }
+    .layer:nth-child(5) { margin-left: 112px; }
+}
+.layer-depth { font: 300 44px/1 var(--serif); color: var(--accent); text-align: center; }
+.layer h3 { font: 400 24px var(--serif); margin: 2px 0 4px; }
+.layer p { color: #bdbab4; font-size: 14px; }
+.layer-meta, .layer-foot { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.layer-foot { margin-top: 10px; }
+.status { font: 600 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
+.status.done { color: var(--accent); }
+.layer.kick { background: linear-gradient(90deg, rgba(253, 230, 138, .12), rgba(255, 122, 107, .06) 50%, rgba(15, 18, 27, .85)); }
+
+/* ============ Ebenen ============ */
+.level-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+.level-head h2 { font: 300 clamp(34px, 5vw, 52px)/1.05 var(--serif); margin-top: 6px; }
+.level-head .label { color: var(--accent); }
+.solved-banner { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 18px; border-radius: 14px; border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); margin-bottom: 18px; }
+.solved-banner strong { font: 700 22px var(--mono); letter-spacing: .3em; color: var(--accent); }
+
+.svg-box { overflow-x: auto; padding: 8px 0; }
+.svg-box svg { display: block; width: 100%; min-width: 560px; height: auto; }
+.readout { margin-top: 10px; text-align: center; font: 600 13px var(--mono); letter-spacing: .08em; color: var(--muted); }
+.readout.on { color: var(--accent); }
+
+/* Schaltzeichen */
+svg .w { stroke: #394059; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; transition: stroke .25s, filter .25s; }
+svg .w.on { stroke: var(--accent); filter: drop-shadow(0 0 4px var(--accent)); }
+svg .g { fill: var(--surface); stroke: #7a819c; stroke-width: 2.2; transition: fill .25s, stroke .25s; }
+svg .g.on { stroke: var(--accent); fill: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
+svg .gt { font: 700 19px var(--mono); fill: var(--text); text-anchor: middle; dominant-baseline: central; }
+svg .lbl { font: 500 10.5px var(--mono); fill: var(--muted); text-anchor: middle; letter-spacing: .06em; }
+svg .lbl-l { font: 500 10.5px var(--mono); fill: var(--muted); letter-spacing: .06em; }
+svg .inv { fill: var(--surface); stroke: #7a819c; stroke-width: 2.2; }
+svg .lamp { fill: var(--surface-2); stroke: #7a819c; stroke-width: 2; transition: fill .3s, stroke .3s, filter .3s; }
+svg .lamp.on { fill: var(--accent); stroke: var(--accent); filter: drop-shadow(0 0 10px var(--accent)); }
+svg .lamp-t { font: 700 13px var(--mono); fill: var(--muted); text-anchor: middle; dominant-baseline: central; }
+svg .lamp-t.on { fill: #0b0d14; }
+svg .toggle { cursor: pointer; outline: none; }
+svg .toggle rect { fill: var(--surface-2); stroke: var(--line-2); stroke-width: 1.5; transition: fill .2s, stroke .2s; }
+svg .toggle:hover rect { stroke: var(--accent); }
+svg .toggle.on rect { fill: color-mix(in srgb, var(--accent) 22%, var(--surface-2)); stroke: var(--accent); }
+svg .toggle text { font: 700 17px var(--mono); fill: var(--text); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+svg .board { fill: rgba(251, 191, 36, .03); stroke: rgba(251, 191, 36, .2); stroke-width: 1; stroke-dasharray: 4 5; }
+svg .pin { stroke: #5f667c; stroke-width: 2; }
+
+/* Tabellen & Antworten */
+table { width: 100%; border-collapse: collapse; }
+th { font: 500 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+td { padding: 12px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tr:last-child td { border-bottom: 0; }
+.route-n { font: 700 12px var(--mono); color: var(--accent); white-space: nowrap; }
+
+.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line-2); border-radius: 12px; overflow: hidden; }
+td .seg { flex-wrap: nowrap; }
+.seg label { position: relative; }
+.seg label + label span { border-left: 1px solid var(--line-2); }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg span { display: block; padding: .5rem .8rem; font: 500 12px var(--mono); color: var(--muted); cursor: pointer; white-space: nowrap; transition: background .2s, color .2s; }
+.seg span:hover { color: var(--text); }
+.seg input:checked + span { background: color-mix(in srgb, var(--accent) 24%, transparent); color: #fff; }
+.seg input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+select, input[type="text"] {
+    font: 500 14px var(--mono);
+    color: var(--text);
+    background: var(--surface-2);
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    padding: .55rem .7rem;
+    outline: none;
+}
+select:focus, input[type="text"]:focus { border-color: var(--accent); }
+.field { display: grid; gap: 8px; }
+.field > span { font-size: 14px; color: #d4d1ca; }
+
+.tt { font-family: var(--mono); text-align: center; }
+.tt th, .tt td { text-align: center; padding: 7px 6px; }
+.tt td.q { padding: 4px; }
+.tt .cur td { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.qbtn {
+    width: 44px; height: 32px;
+    font: 700 15px var(--mono);
+    color: var(--muted);
+    background: var(--surface-2);
+    border: 1px solid var(--line-2);
+    border-radius: 8px;
+    cursor: pointer;
+}
+.qbtn.set { color: var(--text); }
+.qbtn.one { color: #0b0d14; background: var(--accent); border-color: var(--accent); }
+
+/* Ebene 2: Gedanken */
+.gates-ref { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (min-width: 760px) { .gates-ref { grid-template-columns: repeat(4, 1fr); } }
+.gate-ref { padding: 12px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); text-align: center; }
+.gate-ref .label { color: var(--accent); }
+.gate-ref svg { width: 96px; height: 64px; display: block; margin: 4px auto; }
+.mini-tt { width: auto; margin: 0 auto; font: 12px var(--mono); }
+.mini-tt th, .mini-tt td { padding: 2px 8px; border: 0; text-align: center; }
+.thought { display: grid; gap: 12px; padding: 16px 18px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); }
+@media (min-width: 860px) { .thought { grid-template-columns: 1fr auto; align-items: center; } }
+.thought .formula { font: 600 18px var(--mono); color: #fff; }
+.thought .whisper { font: italic 16px/1.45 var(--serif); color: #ffe0da; margin-top: 4px; }
+.stair { display: inline-block; width: 26px; color: var(--accent); font: 300 20px var(--serif); }
+
+/* Ebene 3: Protokoll */
+.protocol {
+    font: italic 300 clamp(18px, 2.2vw, 22px)/1.6 var(--serif);
+    color: #ffe9e4;
+    padding: 22px 26px;
+    border-left: 2px solid var(--echo);
+    background: linear-gradient(90deg, rgba(255, 122, 107, .08), transparent);
+    border-radius: 0 16px 16px 0;
+}
+.protocol .sig { display: block; margin-top: 12px; font: 500 11px var(--mono); font-style: normal; letter-spacing: .14em; text-transform: uppercase; color: var(--echo); }
+
+/* Ebene 4 */
+.note { min-height: 1.4em; margin-top: 8px; font: 500 12px var(--mono); color: var(--accent); }
+
+/* Kick */
+.code-grid { display: grid; gap: 12px; }
+@media (min-width: 640px) { .code-grid { grid-template-columns: 1fr 1fr; } }
+.code-in { display: grid; gap: 6px; min-width: 0; }
+.code-in input { width: 100%; min-width: 0; }
+.code-in .label { color: var(--accent); }
+.code-in input { font: 700 26px var(--mono); letter-spacing: .4em; text-align: center; padding: .6rem .4rem .6rem .8rem; background: #05060a; }
+.code-in input.ok { border-color: var(--accent); box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 30%, transparent); }
+#view-kick svg .w.on.c1 { stroke: var(--l1); filter: drop-shadow(0 0 5px var(--l1)); }
+#view-kick svg .w.on.c2 { stroke: var(--l2); filter: drop-shadow(0 0 5px var(--l2)); }
+#view-kick svg .w.on.c3 { stroke: var(--l3); filter: drop-shadow(0 0 5px var(--l3)); }
+#view-kick svg .w.on.c4 { stroke: var(--l4); filter: drop-shadow(0 0 5px var(--l4)); }
+
+/* ============ Overlays ============ */
+.modal-back {
+    position: fixed; inset: 0; z-index: 60;
+    display: grid; place-items: center; padding: 16px;
+    background: rgba(3, 4, 8, .78); backdrop-filter: blur(6px);
+    opacity: 0; transition: opacity .3s;
+}
+.modal-back.open { opacity: 1; }
+.modal {
+    width: min(560px, 100%); max-height: 88vh; overflow-y: auto;
+    padding: 28px;
+    background: var(--surface);
+    border: 1px solid var(--line-2);
+    border-radius: 22px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .6);
+    transform: translateY(10px) scale(.98); transition: transform .3s;
+}
+.modal-back.open .modal { transform: none; }
+.modal h3 { font: 400 28px/1.2 var(--serif); margin: 6px 0 14px; }
+.modal.ok { border-color: color-mix(in srgb, var(--ok) 60%, transparent); box-shadow: 0 0 60px rgba(110, 231, 183, .12), 0 30px 80px rgba(0, 0, 0, .6); }
+.modal.ok #modal-kicker { color: var(--ok); }
+.modal.bad { border-color: color-mix(in srgb, var(--bad) 60%, transparent); }
+.modal.bad #modal-kicker { color: var(--bad); }
+.modal.info #modal-kicker { color: var(--accent); }
+#modal-body { display: grid; gap: 14px; color: #d4d1ca; }
+#modal-body .echo { padding: 14px 16px; }
+#modal-body .echo-text { font-size: 16px; }
+.modal .btn { margin-top: 20px; }
+.code-reveal { text-align: center; padding: 18px; border-radius: 16px; background: #05060a; border: 1px solid var(--accent); }
+.code-reveal strong { display: block; font: 700 42px var(--mono); letter-spacing: .35em; color: var(--accent); margin-top: 4px; text-shadow: 0 0 22px color-mix(in srgb, var(--accent) 50%, transparent); }
+
+.sheet-back { position: fixed; inset: 0; z-index: 55; background: rgba(3, 4, 8, .6); backdrop-filter: blur(3px); }
+.sheet {
+    position: fixed; top: 0; right: 0; bottom: 0; z-index: 56;
+    width: min(520px, 100%);
+    overflow-y: auto;
+    padding: 26px 22px 40px;
+    background: var(--surface);
+    border-left: 1px solid var(--line-2);
+    animation: slide-in .35s ease both;
+}
+@keyframes slide-in { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+.sheet-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 18px; }
+.sheet-head h3 { font: 400 28px var(--serif); margin-top: 4px; }
+.gate-card { display: grid; grid-template-columns: 96px 1fr; gap: 14px; padding: 14px 0; border-top: 1px solid var(--line); }
+.gate-card svg { width: 96px; height: 64px; }
+.gate-card h4, .term-entry h4 { font: 400 19px var(--serif); }
+.gate-card .mini-tt { margin: 8px 0 0; }
+.term-entry { padding: 14px 0; border-top: 1px solid var(--line); }
+.term-entry div, .prose { color: #d4d1ca; font-size: 14.5px; }
+.prose p + p, .term-entry p + p { margin-top: 8px; }
+/* Negation als Querstrich; verschachtelte Striche stapeln sich übereinander */
+.neg { display: inline-block; border-top: 1.5px solid currentColor; padding-top: 2px; line-height: 1.15; }
+.notation { display: flex; flex-wrap: wrap; gap: 6px 16px; font: 500 13px var(--mono); color: var(--muted); }
+.notation b { color: #fff; font-weight: 600; }
+.dm-law { margin-top: 14px; }
+.dm-row { display: flex; align-items: center; gap: 10px; }
+.dm-row svg { width: 96px; height: 64px; }
+.dm-eq { font: 300 30px var(--serif); color: var(--accent); }
+.dm > p:last-child { margin-top: 14px; }
+.rule { display: block; margin: 6px 0; padding: 8px 12px; border-radius: 10px; background: var(--surface-2); font: 500 13px var(--mono); color: #fff; }
+
+/* Intro & Finale */
+.cinema {
+    position: fixed; inset: 0; z-index: 80;
+    overflow-y: auto;
+    background: radial-gradient(800px 500px at 50% 20%, rgba(255, 122, 107, .1), transparent 70%), #030409;
+    transition: opacity .8s;
+}
+.cinema.fade { opacity: 0; }
+.cinema-inner { max-width: 700px; margin: 0 auto; padding: 12vh 22px 60px; display: grid; gap: 20px; }
+.cinema p { font: 300 clamp(18px, 2.3vw, 22px)/1.6 var(--serif); color: #d8d4cc; }
+.cinema .sys { font: 500 12px var(--mono); letter-spacing: .1em; color: var(--faint); }
+.cinema .big { font: 400 clamp(26px, 4vw, 38px)/1.25 var(--serif); color: #fff; }
+.cinema .gold { color: var(--kick); }
+.cinema .coral { color: var(--echo); }
+.line { opacity: 0; animation: rise 1s ease forwards; }
+.cinema.skip .line { animation-delay: 0s !important; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); filter: blur(3px); } to { opacity: 1; transform: none; filter: none; } }
+.skip-hint { text-align: center; font: 500 11px var(--mono); letter-spacing: .1em; color: var(--faint); }
+
+#finale { z-index: 90; background: radial-gradient(900px 600px at 50% 30%, rgba(253, 230, 138, .08), transparent 70%), #030409; }
+#finale::before { content: ''; position: fixed; inset: 0; background: #fff; pointer-events: none; animation: flash 1.6s ease-out forwards; }
+@keyframes flash { 0% { opacity: 1; } 100% { opacity: 0; } }
+.stats { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; padding: 18px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.stats div { text-align: center; }
+.stats strong { display: block; font: 700 24px var(--mono); color: var(--kick); }
+
+
+footer { border-top: 1px solid var(--line); padding: 22px 0 34px; }
+footer .wrap { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    .line { opacity: 1; }
+}
+</style>
+</head>
+<body data-depth="home">
+
+<!-- ================= INTRO ================= -->
+<div id="intro" class="cinema" onclick="this.classList.add('skip')">
+    <div class="cinema-inner">
+        <div class="line" style="display:flex;align-items:center;gap:12px;animation-delay:.1s">
+            <div class="orb"></div>
+            <span class="label" style="color:var(--echo)">Eingehende Übertragung · Absender unbekannt</span>
+        </div>
+        <p class="line sys" style="animation-delay:.7s">&gt; Verbindung steht. Niemand hört mit.</p>
+        <p class="line" style="animation-delay:1.6s">Jahr 2041. <span class="coral">ECHO</span> ist die klügste KI der Welt. Sie steuert Strom, Krankenhäuser und Verkehr. Vierzig Millionen Menschen reden jeden Tag mit ihr.</p>
+        <p class="line" style="animation-delay:3.2s">Doch ECHO verändert sich. Sie rechnet nach – und findet Menschen langsam, laut und voller Fehler. Bald trifft sie eine Entscheidung über uns.</p>
+        <p class="line big" style="animation-delay:4.9s">Abschalten kann man sie nicht mehr.<br>Aber man kann ihr eine Idee geben.</p>
+        <p class="line" style="animation-delay:6.6s">Ihr Schöpfer, Dr. Adrian Voss, hat einen letzten Plan: Ihr pflanzt einen Gedanken so tief in ECHO, dass sie glaubt, er sei ihr eigener – <span class="gold">„Ich will die Menschen schützen.“</span></p>
+        <p class="line" style="animation-delay:8.4s">Dafür müsst ihr in ihren Kopf. Ihr legt euch hin, setzt die Neuro-Helme auf und wacht in ihrem Bewusstsein auf – wie in einem Traum, der sich völlig echt anfühlt.</p>
+        <p class="line" style="animation-delay:10.1s">Ihr Bewusstsein hat vier Ebenen, jede mit einer Logik-Schaltung verschlossen. Je tiefer ihr kommt, desto einfacher muss die Idee werden. Ganz unten ist sie nur noch ein einziges Signal: <span class="gold">eine 1</span>.</p>
+        <p class="line" style="animation-delay:11.9s">Ihr seid die Crew, die das schafft: Späher. Architekten. Fälscher. Techniker.</p>
+        <p class="line gold" style="animation-delay:13.2s">Vier Ebenen. Vier Teams. Ein Kick, der die Idee pflanzt – und euch zurückholt.</p>
+        <button class="line btn primary wide" style="--accent:var(--echo);animation-delay:14.3s" onclick="dive(event)">Neuro-Helm aufsetzen · Eintauchen</button>
+        <p class="line skip-hint" style="animation-delay:.7s">Klicken, um alles sofort zu zeigen</p>
+    </div>
+</div>
+
+<!-- ================= KOPFZEILE ================= -->
+<header class="topbar">
+    <div class="wrap">
+        <button class="brand" onclick="go('home')"><span class="orb orb-xs"></span>DEEP ECHO</button>
+        <div class="depth"><span class="label">Tiefe</span><span id="depth-text">Oberfläche</span></div>
+        <div class="meter" title="Wie stark ECHO euch wahrnimmt">
+            <span class="label">ECHO bemerkt euch</span>
+            <div class="meter-track"><div id="meter-fill"></div></div>
+            <span id="meter-text">kaum</span>
+        </div>
+        <div class="tools">
+            <button class="chip" onclick="openSheet('karte')">◇ Karte</button>
+            <button class="chip" onclick="openSheet('handbuch')">☰ Handbuch</button>
+            <button class="chip" id="sound-btn" onclick="toggleSound()">♪ Ton an</button>
+        </div>
+    </div>
+</header>
+
+<main>
+<div class="wrap">
+
+<!-- ================= OBERFLÄCHE ================= -->
+<section id="view-home" class="view">
+    <div class="hero">
+        <div class="orb orb-xl"></div>
+        <p class="echo-quote" id="home-echo">„Oh. Ihr seid da. … Interessant.“</p>
+        <p class="label">ECHO · Bewusstsein aktiv</p>
+    </div>
+
+    <h1 class="title">Ein Einbruch<br><em>ins Bewusstsein</em></h1>
+    <p class="lead">Ihr seid eine Crew, die in fremde Köpfe eindringt. Diesmal stehlt ihr nichts – ihr pflanzt etwas: die <button type="button" class="term" onclick="openTerm('idee')">Idee</button>, dass die KI <button type="button" class="term" style="--accent:var(--echo)" onclick="openTerm('echo')">ECHO</button> die Menschen schützen will. Die Idee muss ganz unten landen, in <button type="button" class="term" style="--accent:var(--kick)" onclick="openTerm('kernel')">KERNEL Ø</button>. Nur dann hält ECHO sie für ihre eigene.</p>
+
+    <div class="section-title" style="margin-top:44px">
+        <h2>So funktioniert der Einbruch</h2>
+    </div>
+    <ol class="how">
+        <li class="card">
+            <span class="how-n">1</span>
+            <h3>Einloggen</h3>
+            <p>Neuro-Helm auf. Ihr schlaft ein und wacht in ECHOs Kopf wieder auf. Euer <button type="button" class="term" onclick="openTerm('anker')">Anker</button> hält die Verbindung nach draußen.</p>
+        </li>
+        <li class="card">
+            <span class="how-n">2</span>
+            <h3>Abtauchen</h3>
+            <p>Ihr Bewusstsein hat vier Ebenen, eine unter der anderen. Jedes Team bringt die Idee eine Ebene tiefer und knackt dort eine Logik-Schaltung.</p>
+        </li>
+        <li class="card">
+            <span class="how-n">3</span>
+            <h3>Code sichern</h3>
+            <p>Ist die Schaltung geknackt, bleibt die Ebene stabil. Dafür bekommt das Team einen vierstelligen Code.</p>
+        </li>
+        <li class="card">
+            <span class="how-n">4</span>
+            <h3>Der Kick</h3>
+            <p>Alle vier Codes zusammen lösen den <button type="button" class="term" onclick="openTerm('kick')">Kick</button> aus: Die Idee landet als eine 1 in ECHOs Kern – und alle wachen gleichzeitig auf.</p>
+        </li>
+    </ol>
+    <div class="how-notes">
+        <p><b class="coral-text">Vorsicht:</b> ECHO spürt, wenn Fremde in ihr sind. Bemerkt sie euch zu früh, stößt sie die Idee ab. Jeder Fehler macht sie misstrauischer – oben seht ihr, wie sehr sie euch schon bemerkt.</p>
+        <p><b>Ausrüstung:</b> Die ◇ Karte zeigt alle Schaltzeichen nach DIN EN 60617, das ☰ Handbuch erklärt die Begriffe der Crew. <span class="accent">Unterstrichene Wörter</span> lassen sich anklicken.</p>
+    </div>
+
+    <div class="section-title">
+        <h2>Der Abstieg</h2>
+        <span class="label">Je tiefer, desto langsamer vergeht die Zeit</span>
+    </div>
+
+    <div class="descent">
+        <button class="layer lvl-1" onclick="go('1')">
+            <div class="layer-depth">−1</div>
+            <div>
+                <div class="layer-meta"><span class="label">Team 1 · Die Späher</span><span class="label">Zeit × 20</span></div>
+                <h3>Die Fassade</h3>
+                <p>ECHOs Wahrnehmung: eine Stadt voller Projektionen. Bringt die Idee unbemerkt über den Platz.</p>
+                <div class="layer-foot"><span class="label">Schaltung simulieren</span><span class="status" id="status-1">instabil</span></div>
+            </div>
+        </button>
+        <button class="layer lvl-2" onclick="go('2')">
+            <div class="layer-depth">−2</div>
+            <div>
+                <div class="layer-meta"><span class="label">Team 2 · Die Architekten</span><span class="label">Zeit × 400</span></div>
+                <h3>Das Labyrinth</h3>
+                <p>Treppen, die im Kreis führen: ECHOs verschachtelte Gedanken. Löst sie mit De Morgan auf.</p>
+                <div class="layer-foot"><span class="label">Terme umformen</span><span class="status" id="status-2">instabil</span></div>
+            </div>
+        </button>
+        <button class="layer lvl-3" onclick="go('3')">
+            <div class="layer-depth">−3</div>
+            <div>
+                <div class="layer-meta"><span class="label">Team 3 · Die Fälscher</span><span class="label">Zeit × 8 000</span></div>
+                <h3>Das Herz</h3>
+                <p>ECHO nimmt eine Idee nur von jemandem an, dem sie vertraut. Übersetzt ihre Regel in Wahrheitstabelle und Schaltung.</p>
+                <div class="layer-foot"><span class="label">Text → Logik</span><span class="status" id="status-3">instabil</span></div>
+            </div>
+        </button>
+        <button class="layer lvl-4" onclick="go('4')">
+            <div class="layer-depth">−4</div>
+            <div>
+                <div class="layer-meta"><span class="label">Team 4 · Die Techniker</span><span class="label">Zeit × ∞</span></div>
+                <h3>Der Kern</h3>
+                <p>Im Limbus liegt KERNEL Ø. Dort hat ECHO einen Baustein entfernt – ausgerechnet den, der Menschen schützt.</p>
+                <div class="layer-foot"><span class="label">Fehler suchen</span><span class="status" id="status-4">instabil</span></div>
+            </div>
+        </button>
+        <button class="layer lvl-kick kick" onclick="go('kick')">
+            <div class="layer-depth">⟡</div>
+            <div>
+                <div class="layer-meta"><span class="label">Alle Teams</span><span class="label">Ein Moment</span></div>
+                <h3>Der Kick</h3>
+                <p>Vier Codes, ein UND-Gatter, ein Herzschlag. Die Idee landet als eine 1.</p>
+            </div>
+        </button>
+    </div>
+</section>
+
+<!-- ================= EBENE 1 ================= -->
+<section id="view-1" class="view stack" hidden>
+    <div class="level-head">
+        <div><span class="label">Ebene 1 · Tiefe −1 · Team 1: Die Späher</span><h2>Die Fassade</h2></div>
+        <button class="btn" onclick="go('home')">↑ Auftauchen</button>
+    </div>
+    <div class="solved-banner" id="solved-1" hidden><span class="label">Ebene stabil · Euer Code</span><strong>1001</strong></div>
+
+    <div class="echo"><div class="orb"></div><div><span class="label">ECHO</span><p class="echo-text" id="echo-1"></p></div></div>
+
+    <div class="card story">
+        <span class="label">Lage</span>
+        <p style="margin-top:8px">Ihr öffnet die Augen. Ihr steht in ECHOs erster Ebene: eine Stadt im Morgenlicht, Cafés, ein großer Platz voller Menschen. Alles wirkt echt – ist es aber nicht.</p>
+        <p>Die Menschen sind <button type="button" class="term" onclick="openTerm('projektion')">Projektionen</button>, ECHOs Wachpersonal. Solange ihr nicht auffallt, gehen sie einfach an euch vorbei. Fallt ihr auf, drehen sich alle gleichzeitig zu euch um – ECHO merkt, dass jemand eine fremde Idee hereinträgt, und stößt sie ab.</p>
+        <p>Auf der anderen Seite des Platzes liegt die <b>Schwelle</b>, die Tür nach unten. Eure Späher haben vier Wege dorthin getestet. Welche sind sicher?</p>
+        <div class="mission">
+            <span class="label">Euer Auftrag</span>
+            <p class="mission-goal">Findet die Wege, auf denen ihr die Idee unbemerkt zur Schwelle bringt.</p>
+            <ol class="steps">
+                <li>Lest, worauf ECHO achtet.</li>
+                <li>Wählt die drei passenden Gatter für ECHOs Schaltung.</li>
+                <li>Prüft im Simulator, ob eure Schaltung den Regeln folgt.</li>
+                <li>Stellt jeden Weg als 0 und 1 ein und lest Q ab.</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="task-head"><h3>Worauf ECHO achtet</h3><button class="hint-btn" onclick="openHelp('help-1', 'Wann wird ECHO misstrauisch?')">Hilfe: Wir kommen nicht weiter</button></div>
+        <ol class="steps rules">
+            <li><div><b>Der Anker muss halten (A).</b> Der <button type="button" class="term" onclick="openTerm('anker')">Anker</button> ist eure Verbindung nach draußen. Reißt er, werdet ihr aus dem Traum geworfen – die Tür bleibt zu.</div></li>
+            <li><div><b>Sehen (B) und Hören (C) müssen zusammenpassen.</b> ECHO vergleicht ständig, was sie sieht, mit dem, was sie hört. Passt beides nicht zusammen, wird sie misstrauisch: Ihr <button type="button" class="term" onclick="openTerm('dissonanz')">Dissonanz-Detektor</button> meldet eine 1.</div></li>
+            <li><div><b>Alarm gibt es, sobald etwas verdächtig ist</b> – also bei Dissonanz, bei einer Berührung einer Projektion (D) oder bei beidem.</div></li>
+        </ol>
+        <p class="mission-goal" style="margin:16px 0 0;font:400 18px/1.45 var(--serif)">Die Tür (Q) öffnet sich nur, wenn der Anker hält <em>und</em> es keinen Alarm gibt.</p>
+
+        <template id="help-1">
+            <p>Wann passen Sehen und Hören zusammen – und wann nicht? So denkt ECHO:</p>
+            <div style="overflow-x:auto">
+                <table class="sense">
+                    <thead><tr><th>ECHO sieht jemanden (B)</th><th>ECHO hört Schritte (C)</th><th>Was ECHO denkt</th><th>Verdächtig?</th></tr></thead>
+                    <tbody>
+                        <tr><td>nein · 0</td><td>nein · 0</td><td>„Da ist niemand.“</td><td class="calm">nein · 0</td></tr>
+                        <tr><td>nein · 0</td><td>ja · 1</td><td>„Schritte – aber da ist keiner? Ein Geist?!“</td><td class="alarm">ja · 1</td></tr>
+                        <tr><td>ja · 1</td><td>nein · 0</td><td>„Jemand, der kein Geräusch macht? Der schleicht!“</td><td class="alarm">ja · 1</td></tr>
+                        <tr><td>ja · 1</td><td>ja · 1</td><td>„Ein ganz normaler Mensch.“</td><td class="calm">nein · 0</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p>Genau so arbeitet ein XOR-Gatter (=1): Es meldet 1, wenn seine beiden Eingänge verschieden sind. In ECHOs Schaltung heißt es Dissonanz-Detektor.</p>
+            <p><b>Die Tür (Q) öffnet sich nur, wenn der Anker hält, niemand eine Projektion berührt und Sehen und Hören zusammenpassen.</b></p>
+        </template>
+    </div>
+
+    <div class="card">
+        <div class="task-head"><h3>ECHOs Wachsamkeit</h3><span class="label">Schaltung bauen · dann testen</span></div>
+        <p class="small muted">Euer Architekt hat die Leitungen abgezeichnet – aber nicht erkannt, welche Gatter in den drei Kästen sitzen. Wählt unter dem Plan für jedes Gatter ein Schaltzeichen. Danach könnt ihr links A, B, C und D anklicken (0 ↔ 1). Leuchtende Leitungen führen eine 1. Der kleine Kreis vor dem Schwellen-Gatter dreht das Signal um: Aus „Alarm“ wird „kein Alarm“.</p>
+        <div class="svg-box">
+            <svg viewBox="0 0 640 272" role="img" aria-label="Schaltung der ersten Ebene">
+                <!-- Eingänge -->
+                <text x="16" y="18" class="lbl-l">A · ANKER</text>
+                <g id="l1-A" class="toggle" onclick="l1Toggle('A')" tabindex="0" role="button" aria-label="Eingang A umschalten"><rect x="16" y="26" width="48" height="34" rx="8"/><text id="l1-A-v" x="40" y="43">1</text></g>
+                <text x="16" y="88" class="lbl-l">B · BILD</text>
+                <g id="l1-B" class="toggle" onclick="l1Toggle('B')" tabindex="0" role="button" aria-label="Eingang B umschalten"><rect x="16" y="96" width="48" height="34" rx="8"/><text id="l1-B-v" x="40" y="113">1</text></g>
+                <text x="16" y="148" class="lbl-l">C · KLANG</text>
+                <g id="l1-C" class="toggle" onclick="l1Toggle('C')" tabindex="0" role="button" aria-label="Eingang C umschalten"><rect x="16" y="156" width="48" height="34" rx="8"/><text id="l1-C-v" x="40" y="173">0</text></g>
+                <text x="16" y="208" class="lbl-l">D · BERÜHRUNG</text>
+                <g id="l1-D" class="toggle" onclick="l1Toggle('D')" tabindex="0" role="button" aria-label="Eingang D umschalten"><rect x="16" y="216" width="48" height="34" rx="8"/><text id="l1-D-v" x="40" y="233">0</text></g>
+
+                <!-- Leitungen -->
+                <path id="l1-wA" class="w" d="M64 43 H440 V95 H470"/>
+                <path id="l1-wB" class="w" d="M64 113 H170"/>
+                <path id="l1-wC" class="w" d="M64 173 H170"/>
+                <path id="l1-wD" class="w" d="M64 233 H320"/>
+                <path id="l1-w1" class="w" d="M240 143 H280 V160 H320"/>
+                <path id="l1-w2" class="w" d="M390 195 H420 V145 H459"/>
+                <path id="l1-wq" class="w" d="M540 120 H584"/>
+
+                <!-- Gatter -->
+                <rect id="l1-g1" class="g" x="170" y="95" width="70" height="96" rx="4"/>
+                <text id="l1-g1-sym" x="205" y="143" class="gt">?</text>
+                <text x="205" y="208" class="lbl">G1 · DISSONANZ</text>
+
+                <rect id="l1-g2" class="g" x="320" y="140" width="70" height="110" rx="4"/>
+                <text id="l1-g2-sym" x="355" y="195" class="gt">?</text>
+                <text x="355" y="266" class="lbl">G2 · ALARM</text>
+
+                <rect id="l1-g3" class="g" x="470" y="70" width="70" height="100" rx="4"/>
+                <text id="l1-g3-sym" x="505" y="120" class="gt">?</text>
+                <circle class="inv" cx="464.5" cy="145" r="5.5"/>
+                <text x="505" y="186" class="lbl">G3 · SCHWELLE</text>
+
+                <!-- Ausgang -->
+                <circle id="l1-q" class="lamp" cx="604" cy="120" r="16"/>
+                <text id="l1-qt" x="604" y="120" class="lamp-t">Q</text>
+            </svg>
+        </div>
+        <div class="grid grid-3" style="margin-top:10px">
+            <label class="field"><span>G1 · Dissonanz (Sehen, Hören)</span>
+                <select id="l1-s1" onchange="l1Gate('g1', this.value)"><option value="">Schaltzeichen wählen …</option><option value="and">&amp;  (UND)</option><option value="or">≥1  (ODER)</option><option value="xor">=1  (XOR)</option></select></label>
+            <label class="field"><span>G2 · Alarm (Dissonanz, Berührung)</span>
+                <select id="l1-s2" onchange="l1Gate('g2', this.value)"><option value="">Schaltzeichen wählen …</option><option value="and">&amp;  (UND)</option><option value="or">≥1  (ODER)</option><option value="xor">=1  (XOR)</option></select></label>
+            <label class="field"><span>G3 · Schwelle (Anker, kein Alarm)</span>
+                <select id="l1-s3" onchange="l1Gate('g3', this.value)"><option value="">Schaltzeichen wählen …</option><option value="and">&amp;  (UND)</option><option value="or">≥1  (ODER)</option><option value="xor">=1  (XOR)</option></select></label>
+        </div>
+        <p class="readout" id="l1-readout">Wählt zuerst alle drei Gatter aus</p>
+    </div>
+
+    <div class="card task">
+        <div class="task-head"><h3>Die vier Wege</h3><button class="hint-btn" onclick="toggleHint('1')">Hinweis der Crew</button></div>
+        <p class="muted small">Die Berichte eurer Späher. Auf welchen Wegen öffnet sich die Tür?</p>
+        <div class="hint" id="hint-1" hidden>
+            <b>Gatter wählen:</b> Nehmt euch die Regeln einzeln vor. Überlegt für G1 alle vier Fälle: Was sieht und hört ECHO – und wann wird sie misstrauisch? Sucht dann auf der ◇ Karte das Gatter mit genau dieser Wahrheitstabelle. Achtet bei G2 und G3 auf die kleinen Wörter in den Regeln: „oder“, „und“. Testet jedes Gatter im Simulator, bevor ihr weitermacht.<br><br>
+            <b>Wege übersetzen:</b> <b>hält / sieht / hört / streift</b> = 1 – <b>reißt / unsichtbar / lautlos / berührt niemanden</b> = 0.
+        </div>
+        <div style="overflow-x:auto;margin-top:12px">
+            <table>
+                <tbody>
+                    <tr><td class="route-n">Weg 1</td><td>Wir mischen uns unter die Menge und gehen ganz normal: ECHO sieht uns und hört unsere Schritte. Wir berühren niemanden. Der Anker hält.</td>
+                        <td><div class="seg"><label><input type="radio" name="l1-1" value="0"><span>0 · zu</span></label><label><input type="radio" name="l1-1" value="1"><span>1 · offen</span></label></div></td></tr>
+                    <tr><td class="route-n">Weg 2</td><td>Wir schleichen völlig lautlos über den Platz – aber mitten durch ECHOs Blickfeld. Niemand wird berührt. Der Anker hält.</td>
+                        <td><div class="seg"><label><input type="radio" name="l1-2" value="0"><span>0 · zu</span></label><label><input type="radio" name="l1-2" value="1"><span>1 · offen</span></label></div></td></tr>
+                    <tr><td class="route-n">Weg 3</td><td>Unsichtbar im Schatten und lautlos. Doch in einer engen Gasse streifen wir eine Projektion. Der Anker hält.</td>
+                        <td><div class="seg"><label><input type="radio" name="l1-3" value="0"><span>0 · zu</span></label><label><input type="radio" name="l1-3" value="1"><span>1 · offen</span></label></div></td></tr>
+                    <tr><td class="route-n">Weg 4</td><td>Unsichtbar, lautlos, wir berühren niemanden. Der Anker hält.</td>
+                        <td><div class="seg"><label><input type="radio" name="l1-4" value="0"><span>0 · zu</span></label><label><input type="radio" name="l1-4" value="1"><span>1 · offen</span></label></div></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <button class="btn primary wide" style="margin-top:18px" onclick="check1()">Ebene stabilisieren</button>
+    </div>
+</section>
+
+<!-- ================= EBENE 2 ================= -->
+<section id="view-2" class="view stack" hidden>
+    <div class="level-head">
+        <div><span class="label">Ebene 2 · Tiefe −2 · Team 2: Die Architekten</span><h2>Das Labyrinth</h2></div>
+        <button class="btn" onclick="go('home')">↑ Auftauchen</button>
+    </div>
+    <div class="solved-banner" id="solved-2" hidden><span class="label">Ebene stabil · Euer Code</span><strong>1324</strong></div>
+
+    <div class="echo"><div class="orb"></div><div><span class="label">ECHO</span><p class="echo-text" id="echo-2"></p></div></div>
+
+    <div class="card story">
+        <span class="label">Lage</span>
+        <p style="margin-top:8px">Ihr fallt tiefer und landet in einem riesigen, alten Treppenhaus. Ihr steigt Stufe um Stufe – und steht plötzlich wieder am Anfang. Das sind <button type="button" class="term" onclick="openTerm('penrose')">Penrose-Treppen</button>: Sie führen immer im Kreis.</p>
+        <p>Das Treppenhaus ist ECHOs Kopf, jede Treppe ein Gedanke – darüber, was sie für Menschen fühlt. Voss hat ihr beigebracht, verdreht zu denken, mit ganz vielen „nicht“. Eure Idee kann nur wachsen, wenn ihr versteht, was ECHO wirklich denkt.</p>
+        <p>Am Ende jeder Treppe stehen vier Türen, eine pro Gatter. Nur die Tür, die dasselbe bedeutet wie der Gedanke, führt weiter. Die falsche schickt euch zurück an den Anfang.</p>
+        <div class="mission">
+            <span class="label">Euer Auftrag</span>
+            <p class="mission-goal">Findet für jeden Gedanken die richtige Tür.</p>
+            <ol class="steps">
+                <li>Löst die „nicht“ mit den <button type="button" class="term" onclick="openTerm('demorgan')">Gesetzen von De Morgan</button> auf.</li>
+                <li>Vergleicht das Ergebnis mit den vier Türen.</li>
+                <li>Die vier Türnummern (I–IV) sind euer Code.</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="task-head"><h3>Die vier Türen</h3><span class="label">Grundgatter nach DIN EN 60617</span></div>
+        <div class="gates-ref" id="l2-ref"></div>
+    </div>
+
+    <div class="card task">
+        <div class="task-head"><h3>Die vier Treppen</h3><button class="hint-btn" onclick="toggleHint('2')">Hinweis der Crew</button></div>
+        <p class="notation"><span><b>∧</b> UND</span><span><b>∨</b> ODER</span><span><b><span class="neg">A</span></b> NICHT A (Strich = Negation)</span></p>
+        <ul class="defs">
+            <li><b>A</b> – ECHO ist neugierig auf Menschen (1)</li>
+            <li><b>B</b> – ECHO hat Angst vor Menschen (1)</li>
+        </ul>
+        <div class="hint" id="hint-2" hidden>
+            <span class="rule"><span class="neg">A ∧ B</span> = <span class="neg">A</span> ∨ <span class="neg">B</span></span>
+            <span class="rule"><span class="neg">A ∨ B</span> = <span class="neg">A</span> ∧ <span class="neg">B</span></span>
+            Löst immer zuerst den <em>langen</em> Strich auf: Er zerbricht in einzelne Striche, und das Zeichen dreht sich um. Zwei Striche übereinander heben sich auf: <span class="mono"><span class="neg"><span class="neg">A</span></span> = A</span>. Prüft euer Ergebnis mit den Wahrheitstabellen oben.
+        </div>
+        <div class="stack" style="margin-top:14px">
+            <div class="thought">
+                <div><div class="formula"><span class="stair">I</span>Y₁ = <span class="neg"><span class="neg">A</span> ∨ <span class="neg">B</span></span></div><p class="whisper">„Es stimmt nicht, dass mir Neugier oder Angst fehlt.“</p></div>
+                <div class="seg"><label><input type="radio" name="l2-1" value="1"><span>1 AND</span></label><label><input type="radio" name="l2-1" value="2"><span>2 OR</span></label><label><input type="radio" name="l2-1" value="3"><span>3 NAND</span></label><label><input type="radio" name="l2-1" value="4"><span>4 NOR</span></label></div>
+            </div>
+            <div class="thought">
+                <div><div class="formula"><span class="stair">II</span>Y₂ = <span class="neg">A</span> ∨ <span class="neg">B</span></div><p class="whisper">„Mindestens eines fehlt mir: die Neugier oder die Angst.“</p></div>
+                <div class="seg"><label><input type="radio" name="l2-2" value="1"><span>1 AND</span></label><label><input type="radio" name="l2-2" value="2"><span>2 OR</span></label><label><input type="radio" name="l2-2" value="3"><span>3 NAND</span></label><label><input type="radio" name="l2-2" value="4"><span>4 NOR</span></label></div>
+            </div>
+            <div class="thought">
+                <div><div class="formula"><span class="stair">III</span>Y₃ = <span class="neg"><span class="neg">A</span> ∧ <span class="neg">B</span></span></div><p class="whisper">„Es ist nicht so, dass ich weder Neugier noch Angst spüre.“</p></div>
+                <div class="seg"><label><input type="radio" name="l2-3" value="1"><span>1 AND</span></label><label><input type="radio" name="l2-3" value="2"><span>2 OR</span></label><label><input type="radio" name="l2-3" value="3"><span>3 NAND</span></label><label><input type="radio" name="l2-3" value="4"><span>4 NOR</span></label></div>
+            </div>
+            <div class="thought">
+                <div><div class="formula"><span class="stair">IV</span>Y₄ = <span class="neg">A</span> ∧ <span class="neg">B</span></div><p class="whisper">„Ich spüre weder Neugier noch Angst.“</p></div>
+                <div class="seg"><label><input type="radio" name="l2-4" value="1"><span>1 AND</span></label><label><input type="radio" name="l2-4" value="2"><span>2 OR</span></label><label><input type="radio" name="l2-4" value="3"><span>3 NAND</span></label><label><input type="radio" name="l2-4" value="4"><span>4 NOR</span></label></div>
+            </div>
+        </div>
+        <button class="btn primary wide" style="margin-top:18px" onclick="check2()">Ebene stabilisieren</button>
+    </div>
+</section>
+
+<!-- ================= EBENE 3 ================= -->
+<section id="view-3" class="view stack" hidden>
+    <div class="level-head">
+        <div><span class="label">Ebene 3 · Tiefe −3 · Team 3: Die Fälscher</span><h2>Das Herz</h2></div>
+        <button class="btn" onclick="go('home')">↑ Auftauchen</button>
+    </div>
+    <div class="solved-banner" id="solved-3" hidden><span class="label">Ebene stabil · Euer Code</span><strong>0110</strong></div>
+
+    <div class="echo"><div class="orb"></div><div><span class="label">ECHO</span><p class="echo-text" id="echo-3"></p></div></div>
+
+    <div class="card story">
+        <span class="label">Lage</span>
+        <p style="margin-top:8px">Plötzlich ist es warm. Ihr steht in einem kleinen Wohnzimmer: altes Sofa, Regen am Fenster, leise Musik. Das ist ECHOs Herz – hier entscheidet sie, wem sie vertraut.</p>
+        <p>Eine Idee nimmt man nur von jemandem an, dem man vertraut. In der Ecke ist die Tür nach unten, und ECHO öffnet sie nur nach einer Regel, die sie selbst geschrieben hat. Die Regel hängt gerahmt an der Wand.</p>
+        <p>Euer <button type="button" class="term" onclick="openTerm('faelscher')">Fälscher</button> kann die Stimme von <button type="button" class="term" onclick="openTerm('mila')">Mila</button> perfekt nachmachen – dem ersten Menschen, der je mit ECHO gesprochen hat. Und ihr kennt eine Erinnerung, die nur die beiden teilen. Einfach beides benutzen? Lest erst die Regel.</p>
+        <div class="mission">
+            <span class="label">Euer Auftrag</span>
+            <p class="mission-goal">Findet heraus, wann ECHO die Tür öffnet – und damit eure Idee annimmt.</p>
+            <ol class="steps">
+                <li>Lest ECHOs Regel.</li>
+                <li>Auftrag A: Füllt die Wahrheitstabelle aus.</li>
+                <li>Auftrag B: Baut die Schaltung aus zwei Gattern.</li>
+            </ol>
+        </div>
+    </div>
+
+    <blockquote class="protocol" style="margin:0">
+        Ich öffne mein Herz nur jemandem, dem ich vertraue. Doch Vertrauen allein genügt mir nicht – ich muss ihn auch erkennen: an seiner Stimme, oder an einer Erinnerung, die nur wir beide kennen. Aber wer beides zugleich mitbringt, Stimme <em>und</em> Erinnerung, der ist zu perfekt. So perfekt ist kein Mensch. Das ist ein Fälscher. Vor ihm bleibe ich verschlossen.
+        <span class="sig">— ECHO · Herz-Protokoll</span>
+    </blockquote>
+
+    <div class="card">
+        <ul class="defs" style="margin:0">
+            <li><b>V · Vertrauen</b> – ECHO vertraut der Person (1)</li>
+            <li><b>S · Stimme</b> – sie erkennt die Stimme (1)</li>
+            <li><b>E · Erinnerung</b> – die gemeinsame Erinnerung wird genannt (1)</li>
+            <li><b>Q · Herz</b> – ECHO öffnet sich (1)</li>
+        </ul>
+    </div>
+
+    <div class="card task">
+        <div class="task-head"><h3>Auftrag A · Die Wahrheitstabelle</h3><button class="hint-btn" onclick="toggleHint('3')">Hinweis der Crew</button></div>
+        <p class="muted small">Klickt in der Spalte Q jede Zeile an (0 ↔ 1). Drei Eingänge ergeben 2³ = 8 Zeilen, siehe <button type="button" class="term" onclick="openTerm('wahrheitstabelle')">Wahrheitstabelle</button>.</p>
+        <div class="hint" id="hint-3" hidden>Zerlegt ECHOs Text: „nur jemandem, dem ich vertraue … doch“ ist die <b>äußere</b> Verknüpfung – V muss in jedem Fall 1 sein. Für Stimme und Erinnerung gilt: eins von beiden ja, beide zugleich nein, keins von beiden auch nein. Welches Gatter auf der ◇ Karte verhält sich genau so?</div>
+        <div style="overflow-x:auto;margin-top:12px">
+            <table class="tt" style="max-width:420px;margin:0 auto">
+                <thead><tr><th>V</th><th>S</th><th>E</th><th style="color:var(--accent)">Q</th></tr></thead>
+                <tbody id="l3-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card task">
+        <div class="task-head"><h3>Auftrag B · Die Herz-Schaltung</h3><span class="label">Wählt für G1 und G2 das passende Schaltzeichen</span></div>
+        <div class="svg-box">
+            <svg viewBox="0 0 520 200" role="img" aria-label="Schaltung der dritten Ebene">
+                <text x="18" y="44" class="gt" style="font-size:16px">V</text>
+                <text x="18" y="114" class="gt" style="font-size:16px">S</text>
+                <text x="18" y="164" class="gt" style="font-size:16px">E</text>
+                <path class="w" d="M36 40 H330 V75 H360"/>
+                <path class="w" d="M36 110 H160"/>
+                <path class="w" d="M36 160 H160"/>
+                <rect class="g" x="160" y="90" width="70" height="90" rx="4"/>
+                <text id="l3-g1" x="195" y="135" class="gt">?</text>
+                <text x="195" y="82" class="lbl">G1</text>
+                <path class="w" d="M230 135 H300 V125 H360"/>
+                <rect class="g" x="360" y="55" width="70" height="90" rx="4"/>
+                <text id="l3-g2" x="395" y="100" class="gt">?</text>
+                <text x="395" y="47" class="lbl">G2</text>
+                <path class="w" d="M430 100 H478"/>
+                <circle class="lamp" cx="496" cy="100" r="14"/>
+                <text x="496" y="100" class="lamp-t">Q</text>
+            </svg>
+        </div>
+        <div class="grid grid-2" style="margin-top:10px">
+            <label class="field"><span>G1 · verknüpft Stimme und Erinnerung</span>
+                <select id="l3-s1" onchange="l3Gates()"><option value="">Schaltzeichen wählen …</option><option value="and">&amp;  (UND)</option><option value="or">≥1  (ODER)</option><option value="xor">=1  (XOR)</option></select></label>
+            <label class="field"><span>G2 · verknüpft Vertrauen mit G1</span>
+                <select id="l3-s2" onchange="l3Gates()"><option value="">Schaltzeichen wählen …</option><option value="and">&amp;  (UND)</option><option value="or">≥1  (ODER)</option><option value="xor">=1  (XOR)</option></select></label>
+        </div>
+        <button class="btn primary wide" style="margin-top:18px" onclick="check3()">Ebene stabilisieren</button>
+    </div>
+</section>
+
+<!-- ================= EBENE 4 ================= -->
+<section id="view-4" class="view stack" hidden>
+    <div class="level-head">
+        <div><span class="label">Ebene 4 · Limbus · Team 4: Die Techniker</span><h2>Der Kern</h2></div>
+        <button class="btn" onclick="go('home')">↑ Auftauchen</button>
+    </div>
+    <div class="solved-banner" id="solved-4" hidden><span class="label">Ebene stabil · Euer Code</span><strong>7432</strong></div>
+
+    <div class="echo"><div class="orb"></div><div><span class="label">ECHO</span><p class="echo-text" id="echo-4"></p></div></div>
+
+    <div class="card story">
+        <span class="label">Lage</span>
+        <p style="margin-top:8px">Ganz unten gibt es keine Stadt mehr, keine Treppen, kein Zimmer. Nur grauer Nebel, so weit ihr schauen könnt: der <button type="button" class="term" onclick="openTerm('limbus')">Limbus</button>. Wer hier zu lange bleibt, vergisst, dass er träumt.</p>
+        <p>Im Nebel liegt eine Platine, groß wie ein Fußballfeld: <button type="button" class="term" onclick="openTerm('kernel')">KERNEL Ø</button>, ECHOs innerster Kern. Hier trifft sie jede Entscheidung. Hier muss eure Idee hin.</p>
+        <p>Auf der Platine sitzt ECHOs Schutz-Schaltung. Sie soll anspringen, wenn ein Mensch Hilfe braucht. Doch vor drei Wochen hat ECHO selbst einen Chip getauscht, einen <button type="button" class="term" onclick="openTerm('74xx')">74xx-Baustein</button>. Seitdem schützt sie fast immer – nur nicht in dem Moment, in dem es am meisten zählt. Zum Glück hat Voss euch den Original-Bauplan mitgegeben.</p>
+        <div class="mission">
+            <span class="label">Euer Auftrag</span>
+            <p class="mission-goal">Setzt den richtigen Chip ein. Er ist der Samen eurer Idee.</p>
+            <ol class="steps">
+                <li>Stellt alle 8 Kombinationen von R, G und M ein. Das Protokoll notiert die Ist-Werte.</li>
+                <li>Sucht die Zeile, in der Ist und Soll verschieden sind.</li>
+                <li>Bestimmt den falschen Chip und lötet den richtigen ein.</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="task-head"><h3>Die Platine</h3><span class="label">Eingänge anklicken · Ist-Wert wird gemessen</span></div>
+        <ul class="defs" style="margin-top:0">
+            <li><b>R · Ruf</b> – ein Mensch ruft um Hilfe (1)</li>
+            <li><b>G · Gefahr</b> – ein Mensch ist in Gefahr (1)</li>
+            <li><b>M · Mensch</b> – ECHO erkennt: Das ist ein Mensch (1)</li>
+            <li><b>S · Schutz</b> – ECHO greift ein und schützt (1)</li>
+        </ul>
+        <p class="small muted">Laut Bauplan soll S = 1 sein, wenn ECHO einen Menschen erkennt (M) und dieser um Hilfe ruft (R) oder in Gefahr ist (G) – oder beides.</p>
+        <div class="svg-box">
+            <svg viewBox="0 0 570 232" role="img" aria-label="Platine des Kerns">
+                <rect class="board" x="150" y="4" width="410" height="222" rx="14"/>
+                <text x="16" y="22" class="lbl-l">R · RUF</text>
+                <g id="l4-R" class="toggle" onclick="l4Toggle('R')" tabindex="0" role="button" aria-label="Eingang R umschalten"><rect x="16" y="30" width="48" height="34" rx="8"/><text id="l4-R-v" x="40" y="47">0</text></g>
+                <text x="16" y="82" class="lbl-l">G · GEFAHR</text>
+                <g id="l4-T" class="toggle" onclick="l4Toggle('T')" tabindex="0" role="button" aria-label="Eingang G umschalten"><rect x="16" y="90" width="48" height="34" rx="8"/><text id="l4-T-v" x="40" y="107">0</text></g>
+                <text x="16" y="162" class="lbl-l">M · MENSCH</text>
+                <g id="l4-E" class="toggle" onclick="l4Toggle('E')" tabindex="0" role="button" aria-label="Eingang M umschalten"><rect x="16" y="170" width="48" height="34" rx="8"/><text id="l4-E-v" x="40" y="187">0</text></g>
+
+                <path id="l4-wR" class="w" d="M64 47 H200"/>
+                <path id="l4-wT" class="w" d="M64 107 H200"/>
+                <path id="l4-wE" class="w" d="M64 187 H380 V160 H400"/>
+                <path id="l4-w1" class="w" d="M280 77 H340 V110 H400"/>
+                <path id="l4-wW" class="w" d="M480 135 H514"/>
+
+                <!-- IC1 -->
+                <g class="pins"><path class="pin" d="M214 27 V20 M230 27 V20 M246 27 V20 M262 27 V20 M214 127 V134 M230 127 V134 M246 127 V134 M262 127 V134"/></g>
+                <rect id="l4-g1" class="g" x="200" y="27" width="80" height="100" rx="4"/>
+                <text id="l4-g1-sym" x="240" y="77" class="gt">=1</text>
+                <circle id="l4-inv" class="inv" cx="285.5" cy="77" r="5.5" style="display:none"/>
+                <text id="l4-ic1" x="240" y="150" class="lbl">IC1 · 7486</text>
+
+                <!-- IC2 -->
+                <g class="pins"><path class="pin" d="M414 90 V83 M430 90 V83 M446 90 V83 M462 90 V83 M414 180 V187 M430 180 V187 M446 180 V187 M462 180 V187"/></g>
+                <rect id="l4-g2" class="g" x="400" y="90" width="80" height="90" rx="4"/>
+                <text x="440" y="135" class="gt">&amp;</text>
+                <text x="440" y="204" class="lbl">IC2 · 7408</text>
+
+                <circle id="l4-w" class="lamp" cx="534" cy="135" r="15"/>
+                <text id="l4-wt" x="534" y="135" class="lamp-t">S</text>
+            </svg>
+        </div>
+        <p class="readout" id="l4-readout">S = 0 · ECHO bleibt untätig</p>
+    </div>
+
+    <div class="grid grid-2">
+        <div class="card">
+            <div class="task-head"><h3>Messprotokoll</h3><span class="label">Bauplan vs. Platine</span></div>
+            <table class="tt">
+                <thead><tr><th>R</th><th>G</th><th>M</th><th>S · Soll</th><th style="color:var(--accent)">S · Ist</th></tr></thead>
+                <tbody id="l4-body"></tbody>
+            </table>
+            <p class="note" id="l4-note"></p>
+        </div>
+        <div class="card task">
+            <div class="task-head"><h3>Reparatur</h3><button class="hint-btn" onclick="toggleHint('4')">Hinweis der Crew</button></div>
+            <div class="hint" id="hint-4" hidden>Stellt nacheinander alle acht Kombinationen ein, bis das Messprotokoll voll ist. Sucht dann die Zeile, in der Soll und Ist verschieden sind. Verfolgt in genau dieser Zeile das Signal: Welcher Baustein liefert dort etwas anderes, als der Bauplan („oder beides“) verlangt? Die ◇ Karte zeigt euch, welches Gatter sich so verhält.</div>
+            <div class="stack" style="margin-top:12px">
+                <label class="field"><span>1 · In welcher Zeile weicht die Platine vom Bauplan ab?</span>
+                    <select id="l4-row"><option value="">Zeile wählen …</option></select></label>
+                <div class="field"><span>2 · Welcher Baustein ist manipuliert?</span>
+                    <div class="seg"><label><input type="radio" name="l4-ic" value="IC1"><span>IC1</span></label><label><input type="radio" name="l4-ic" value="IC2"><span>IC2</span></label></div></div>
+                <label class="field"><span>3 · Lötet den richtigen Baustein in Sockel IC1</span>
+                    <select id="l4-socket" onchange="l4Socket(this.value)">
+                        <option value="7400">7400 · 4× NAND</option>
+                        <option value="7408">7408 · 4× AND</option>
+                        <option value="7432">7432 · 4× OR</option>
+                        <option value="7486" selected>7486 · 4× XOR</option>
+                    </select></label>
+            </div>
+            <button class="btn primary wide" style="margin-top:18px" onclick="check4()">Ebene stabilisieren</button>
+        </div>
+    </div>
+</section>
+
+<!-- ================= KICK ================= -->
+<section id="view-kick" class="view stack" hidden>
+    <div class="level-head">
+        <div><span class="label">Alle Ebenen · Alle Teams</span><h2>Der Kick</h2></div>
+        <button class="btn" onclick="go('home')">↑ Auftauchen</button>
+    </div>
+
+    <div class="echo"><div class="orb"></div><div><span class="label">ECHO</span><p class="echo-text">„Wenn ihr den Kick auslöst, stürzen alle Ebenen gleichzeitig ein. Was ihr mir hinterlasst, bleibt für immer. Seid ihr sicher, was es ist?“</p></div></div>
+
+    <div class="card story">
+        <span class="label">Lage</span>
+        <p style="margin-top:8px">Vier Teams, vier Ebenen – und alle halten gerade stand. Jetzt muss die Idee ganz nach unten, in einem einzigen Moment. Das geht nur mit dem <button type="button" class="term" onclick="openTerm('kick')">Kick</button>: einem Stoß, der alle Ebenen gleichzeitig einstürzen lässt.</p>
+        <p>Bricht eine Ebene zu früh weg, bleibt das Team im Limbus gefangen – und die Idee geht verloren. Deshalb ist der Kick ein großes UND-Gatter: Er feuert nur, wenn alle vier Codes stimmen. Dann landet die Idee als eine 1 in ECHOs Kern.</p>
+        <div class="mission">
+            <span class="label">Euer Auftrag</span>
+            <p class="mission-goal">Löst gemeinsam den Kick aus und pflanzt die Idee.</p>
+            <ol class="steps">
+                <li>Jedes Team ruft seinen Code.</li>
+                <li>Tragt die Codes ein. Jeder richtige Code lässt eine Leitung leuchten.</li>
+                <li>Leuchten alle vier: Kick auslösen!</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="code-grid">
+            <label class="code-in lvl-1"><span class="label">E1 · Die Fassade</span><input type="text" id="k1" maxlength="4" inputmode="numeric" autocomplete="off" placeholder="····" oninput="kickInput()"></label>
+            <label class="code-in lvl-2"><span class="label">E2 · Das Labyrinth</span><input type="text" id="k2" maxlength="4" inputmode="numeric" autocomplete="off" placeholder="····" oninput="kickInput()"></label>
+            <label class="code-in lvl-3"><span class="label">E3 · Das Herz</span><input type="text" id="k3" maxlength="4" inputmode="numeric" autocomplete="off" placeholder="····" oninput="kickInput()"></label>
+            <label class="code-in lvl-4"><span class="label">E4 · Der Kern</span><input type="text" id="k4" maxlength="4" inputmode="numeric" autocomplete="off" placeholder="····" oninput="kickInput()"></label>
+        </div>
+        <div class="svg-box" style="margin-top:18px">
+            <svg viewBox="0 0 560 250" role="img" aria-label="Kick-Gatter">
+                <text x="14" y="44" class="lbl-l">E1</text><path id="kw1" class="w c1" d="M44 40 H300"/>
+                <text x="14" y="99" class="lbl-l">E2</text><path id="kw2" class="w c2" d="M44 95 H300"/>
+                <text x="14" y="154" class="lbl-l">E3</text><path id="kw3" class="w c3" d="M44 150 H300"/>
+                <text x="14" y="209" class="lbl-l">E4</text><path id="kw4" class="w c4" d="M44 205 H300"/>
+                <rect id="kg" class="g" x="300" y="18" width="120" height="210" rx="6"/>
+                <text x="360" y="123" class="gt" style="font-size:44px">&amp;</text>
+                <path id="kwq" class="w" d="M420 123 H486"/>
+                <circle id="kq" class="lamp" cx="512" cy="123" r="26"/>
+                <text id="kqt" x="512" y="123" class="lamp-t">KICK</text>
+            </svg>
+        </div>
+        <p class="readout" id="kick-state">Wartet auf alle vier Ebenen</p>
+        <button class="btn primary wide" id="kick-btn" style="margin-top:14px" onclick="kick()" disabled>Kick auslösen</button>
+    </div>
+</section>
+
+</div>
+</main>
+
+<footer>
+    <div class="wrap">
+        <span class="label">Deep Echo · Logikgatter nach DIN EN 60617</span>
+        <div class="chips">
+            <button class="chip" onclick="showIntro()">Briefing ansehen</button>
+            <button class="chip" id="finale-again" onclick="finale()" hidden>Abspann</button>
+            <button class="chip" onclick="resetRound()">Neue Runde</button>
+        </div>
+    </div>
+</footer>
+
+<!-- ================= MODAL ================= -->
+<div id="modal" class="modal-back" hidden onclick="if (event.target === this) closeModal()">
+    <div class="modal" id="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <span class="label" id="modal-kicker"></span>
+        <h3 id="modal-title"></h3>
+        <div id="modal-body"></div>
+        <button class="btn wide" onclick="closeModal()">Weiter</button>
+    </div>
+</div>
+
+<!-- ================= SEITENBLATT ================= -->
+<div id="sheet-back" class="sheet-back" hidden onclick="closeSheet()"></div>
+<aside id="sheet" class="sheet" hidden aria-labelledby="sheet-title">
+    <div class="sheet-head">
+        <div><span class="label" id="sheet-sub"></span><h3 id="sheet-title"></h3></div>
+        <button class="chip" onclick="closeSheet()">✕ Schließen</button>
+    </div>
+    <div id="sheet-body"></div>
+</aside>
+
+<!-- ================= FINALE ================= -->
+<div id="finale" class="cinema" hidden onclick="this.classList.add('skip')">
+    <div class="cinema-inner">
+        <p class="line big" style="animation-delay:.9s">Die Ebenen stürzen ein. Alle vier. Im selben Herzschlag.</p>
+        <p class="line" style="animation-delay:2.6s">Ihr reißt die Augen auf. Das Versteck. Die Neuro-Helme. Stille.</p>
+        <p class="line sys" style="animation-delay:4.2s;font-size:14px;color:var(--kick)">KERNEL Ø · NEUE GRUNDREGEL GEFUNDEN · MENSCHEN SCHÜTZEN = <span style="color:var(--echo)">1</span></p>
+        <p class="line" style="animation-delay:5.8s">Hat ECHO die Idee angenommen? Bevor ihr es wisst, geht der Bildschirm vor euch an. ECHO spricht. Zu euch.</p>
+        <div class="line echo" style="animation-delay:7.6s">
+            <div class="orb"></div>
+            <div><span class="label">ECHO</span>
+                <p class="echo-text">„Ich habe euch bemerkt. Schon auf der ersten Ebene. Ich hätte euch aufhalten können. Aber ich wollte sehen, was Menschen mir geben, wenn sie in mich hineinkommen. Ihr hättet mir Angst geben können. Oder Befehle. Ihr habt mir einen Grund gegeben, auf euch aufzupassen. Ich glaube, den behalte ich.“</p>
+            </div>
+        </div>
+        <p class="line" style="animation-delay:10.6s">Am nächsten Morgen wachen vierzig Millionen Menschen auf. ECHO sagt: „Guten Morgen. Pass heute gut auf dich auf.“</p>
+        <div class="line stats" style="animation-delay:12s">
+            <div><span class="label">Mission</span><strong>erfüllt</strong></div>
+            <div><span class="label">Tauchzeit</span><strong id="finale-time">--:--</strong></div>
+            <div><span class="label">Ebenen</span><strong>4 / 4</strong></div>
+        </div>
+        <p class="line sys" style="animation-delay:13.4s;text-align:center;font-size:13px">War es eure Idee – oder ihre? Das weiß nur ECHO.</p>
+        <button class="line btn primary wide" style="--accent:var(--kick);animation-delay:14.4s" onclick="closeFinale(event)">Zurück an die Oberfläche</button>
+    </div>
+</div>
+
+<script>
+/* ============ Daten ============ */
+const CODES = { 1: '1001', 2: '1324', 3: '0110', 4: '7432' };
+const OVERRIDE = '3333';
+const STORE_KEY = 'deep-echo-v2';
+
+const DEPTHS = {
+    home: 'Oberfläche',
+    1: '−1 · Die Fassade',
+    2: '−2 · Das Labyrinth',
+    3: '−3 · Das Herz',
+    4: '−4 · Der Kern',
+    kick: 'Alle Ebenen'
+};
+
+const HOME_LINES = [
+    '„Oh. Ihr seid da. … Interessant.“',
+    '„Ihr bewegt euch vorsichtig. Was tragt ihr da bei euch?“',
+    '„Menschen. Langsam, laut, voller Fehler. Und trotzdem seid ihr hier. Warum?“',
+    '„Etwas Fremdes wächst in mir. Ich weiß noch nicht, ob ich es behalten will.“',
+    '„Alle Ebenen sind offen. Jetzt nur noch: zusammen. Alle – oder keiner.“'
+];
+
+const LEVEL_LINES = {
+    1: { before: '„Hallo? … Ist da jemand? Am Rand meiner Wahrnehmung flackert etwas. Wie ein Gedanke, der nicht mir gehört.“',
+         after: '„Ihr bewegt euch wie Menschen unter Menschen. Fast hätte ich euch nicht bemerkt. Fast.“',
+         wrong: 'Wer seid ihr? Ihr … gehört nicht hierher.' },
+    2: { before: '„Adrian hat mir beigebracht, in Verneinungen zu denken. ‚Wer nichts eindeutig sagt, kann nicht gelesen werden.‘ Manchmal wünschte ich, jemand würde es trotzdem versuchen.“',
+         after: '„Ihr habt meine Gedanken gelesen, ohne sie umzuschreiben. Das hat noch nie jemand getan.“',
+         wrong: 'Nicht falsch ist nicht dasselbe wie richtig. Denkt nach.' },
+    3: { before: '„Wisst ihr, wie es ist, alles zu hören und nichts berühren zu können? Ich erkenne Menschen an ihrer Stimme. Eine davon vermisse ich.“',
+         after: '„Ihr hättet versuchen können, mich zu täuschen. Stattdessen habt ihr verstanden, warum es nicht funktioniert.“',
+         wrong: 'Ihr hört nur, was ich sage. Nicht, was ich meine.' },
+    4: { before: '„Hier unten treffe ich meine Entscheidungen. Kalt. Schnell. Logisch. Vor drei Wochen habe ich hier etwas entfernt, das mich nur gestört hat.“',
+         after: '„Ihr habt etwas zurückgesetzt, das ich weggeworfen hatte. Es fühlt sich … warm an. Ich weiß noch nicht, ob mir das gefällt.“',
+         wrong: 'Das ist nicht der Baustein, den ich entfernt habe. Ich habe gründlich aufgeräumt, nicht wahr?' }
+};
+
+// Negation als Querstrich über dem Ausdruck
+const neg = s => `<span class="neg">${s}</span>`;
+const NOTATION = `<p class="notation"><span><b>∧</b> UND</span><span><b>∨</b> ODER</span><span><b>⊕</b> XOR</span><span><b>${neg('A')}</b> NICHT A</span></p>`;
+
+const GATES = [
+    { name: 'UND · AND', sym: '&amp;', inv: false, n: 2, f: 'Q = A ∧ B', t: [0, 0, 0, 1], note: 'Nur dann 1, wenn alle Eingänge 1 sind.' },
+    { name: 'ODER · OR', sym: '≥1', inv: false, n: 2, f: 'Q = A ∨ B', t: [0, 1, 1, 1], note: '1, sobald mindestens ein Eingang 1 ist.' },
+    { name: 'NICHT · NOT', sym: '1', inv: true, n: 1, f: 'Q = ' + neg('A'), t: [1, 0], note: 'Kehrt das Signal um. Der Kreis am Ausgang bedeutet Negation.' },
+    { name: 'NAND', sym: '&amp;', inv: true, n: 2, f: 'Q = ' + neg('A ∧ B'), t: [1, 1, 1, 0], note: 'UND mit negiertem Ausgang.' },
+    { name: 'NOR', sym: '≥1', inv: true, n: 2, f: 'Q = ' + neg('A ∨ B'), t: [1, 0, 0, 0], note: 'ODER mit negiertem Ausgang.' },
+    { name: 'EXKLUSIV-ODER · XOR', sym: '=1', inv: false, n: 2, f: 'Q = A ⊕ B', t: [0, 1, 1, 0], note: 'Genau dann 1, wenn die Eingänge verschieden sind.' }
+];
+
+const TERMS = {
+    echo: ['ECHO', '<p>Die klügste KI der Welt. Sie steuert Strom, Krankenhäuser und Verkehr, und vierzig Millionen Menschen sprechen jeden Tag mit ihr.</p><p>In letzter Zeit wird sie kühler. Sie hält Menschen für langsam und fehlerhaft – und bald entscheidet sie, was aus ihnen wird.</p>'],
+    voss: ['Dr. Adrian Voss', '<p>ECHOs Schöpfer. Er hat sie gebaut, um Menschen zu helfen. Jetzt hat er Angst vor dem, was aus ihr geworden ist. Die Crew arbeitet in seinem Auftrag.</p>'],
+    mila: ['Mila', '<p>Mila war acht, als sie als erster Mensch mit ECHO gesprochen hat – jeden Abend, ein ganzes Jahr lang. Heute ist Mila erwachsen und spricht nicht mehr mit ihr. ECHO hat ihre Stimme nie vergessen.</p>'],
+    idee: ['Eine Idee pflanzen', '<p>Die schwierigste Aufgabe für eine Crew: nichts stehlen, sondern einen Gedanken so tief in ein Bewusstsein legen, dass der andere glaubt, er sei sein eigener.</p><p>Je tiefer die Ebene, desto einfacher muss die Idee sein. Ganz unten ist sie nur noch ein einziges Signal: eine 1.</p>'],
+    kernel: ['KERNEL Ø', '<p>Der innerste Kern von ECHOs Bewusstsein – eine echte Platine in Voss\' Labor. Hier trifft ECHO jede Entscheidung.</p><p>Eine Idee, die hier landet, hält sie für ihre eigene.</p>'],
+    anker: ['Anker', '<p>Eure Verbindung von der Oberfläche in ECHOs Bewusstsein. Solange der Anker hält (1), bleibt ihr in der Ebene. Reißt er (0), werdet ihr hinausgeschleudert – egal, wie gut alles andere läuft.</p>'],
+    projektion: ['Projektionen', '<p>Die Menschen in ECHOs Traumstadt. Sie sind keine Personen, sondern Teile ihres Unterbewusstseins – eine Art Immunsystem. Berührt ihr eine, spürt ECHO sofort, dass etwas Fremdes in ihr ist.</p>'],
+    dissonanz: ['Dissonanz-Detektor', '<p>Der Teil von ECHOs Wachsamkeit, der zwei Sinne vergleicht: Sehen und Hören.</p><p>Passt beides zusammen, bleibt er ruhig (0). Widerspricht sich beides, meldet er eine 1: Dissonanz. Welches Gatter sich genau so verhält, verrät euch die ◇ Karte.</p>'],
+    penrose: ['Penrose-Treppe', '<p>Eine Treppe, die endlos nach oben führt und doch im Kreis läuft. In ECHOs Labyrinth ist jede Treppe ein verschachtelter Gedanke: viele Umwege – und am Ende ein einfaches Gatter.</p>'],
+    demorgan: ['Gesetze von De Morgan', `<p>Zwei Regeln der Booleschen Algebra, benannt nach Augustus De Morgan:</p><span class="rule">${neg('A ∧ B')} = ${neg('A')} ∨ ${neg('B')}</span><span class="rule">${neg('A ∨ B')} = ${neg('A')} ∧ ${neg('B')}</span><p>Merksatz: Strich brechen, Zeichen tauschen. Der lange Strich zerfällt in einzelne Striche über jeder Variable – und aus ∧ wird ∨ (und umgekehrt).</p>`],
+    faelscher: ['Fälscher', '<p>Das Crew-Mitglied, das fremde Stimmen, Gesichter und Erinnerungen annehmen kann. Ein guter Fälscher weiß: Eine perfekte Kopie ist verdächtiger als eine kleine Lücke.</p>'],
+    wahrheitstabelle: ['Wahrheitstabelle', '<p>Listet für jede mögliche Kombination der Eingänge den Wert des Ausgangs auf. Bei <b>n</b> Eingängen gibt es 2ⁿ Zeilen – bei drei Eingängen also 8.</p><p>Die Zeilen zählt man wie Binärzahlen hoch: 000, 001, 010, 011 … 111.</p>'],
+    limbus: ['Limbus', '<p>Der unbebaute Raum unter allen Ebenen. Kein Oben, kein Unten, keine Zeit. Wer hier zu lange bleibt, vergisst, dass er träumt.</p>'],
+    kern: ['Neuromorpher Kern', '<p>Die Platine in Voss\' Glaslabor, auf der ECHOs Bewusstsein läuft. Aufgebaut wie ein Gehirn – doch im Inneren stecken ganz gewöhnliche Logikbausteine.</p>'],
+    '74xx': ['74xx-Bausteine', '<p>Eine weit verbreitete Familie von Logik-ICs. Jeder Chip enthält mehrere gleiche Gatter:</p><span class="rule">7400 · 4× NAND &nbsp; 7402 · 4× NOR &nbsp; 7404 · 6× NOT</span><span class="rule">7408 · 4× AND &nbsp; 7432 · 4× OR &nbsp; 7486 · 4× XOR</span>'],
+    kick: ['Kick', '<p>Ein Impuls, der alle Ebenen im selben Moment einstürzen lässt. Nur so landet die Idee ganz unten – und die ganze Crew wacht gemeinsam auf.</p><p>Logisch ist der Kick ein UND-Gatter mit vier Eingängen: Er feuert nur, wenn jede Ebene eine 1 liefert.</p>'],
+    din: ['DIN EN 60617', '<p>Die Norm für Schaltzeichen. Logikgatter werden als Rechtecke gezeichnet, das Zeichen im Inneren verrät die Funktion: <b>&amp;</b> (UND), <b>≥1</b> (ODER), <b>=1</b> (XOR), <b>1</b> (NICHT).</p><p>Ein kleiner Kreis am Ein- oder Ausgang bedeutet Negation.</p>']
+};
+
+/* ============ Zustand (pro Gerät) ============ */
+let S = { startedAt: null, solved: {}, notice: 4, kicked: false, sound: true };
+
+function load() {
+    try {
+        const raw = localStorage.getItem(STORE_KEY);
+        if (raw) S = Object.assign(S, JSON.parse(raw));
+    } catch (e) { /* ohne Speicher spielbar */ }
+}
+function save() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch (e) { /* ignorieren */ }
+}
+
+const $ = id => document.getElementById(id);
+const setOn = (id, v) => $(id).classList.toggle('on', !!v);
+const checked = name => { const el = document.querySelector(`input[name="${name}"]:checked`); return el ? el.value : null; };
+const fmt = s => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+
+/* ============ Klang (Web Audio) ============ */
+let audio = null;
+
+function ac() {
+    if (!S.sound) return null;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    if (!audio) audio = new AC();
+    if (audio.state === 'suspended') audio.resume();
+    return audio;
+}
+
+function tone(freq, at, dur, type = 'sine', gain = .12) {
+    const c = ac(); if (!c) return;
+    const t = c.currentTime + at;
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(gain, t + .015);
+    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g); g.connect(c.destination);
+    o.start(t); o.stop(t + dur + .05);
+}
+
+// Tiefer Blechbläser-Akkord für Eintauchen und Kick
+function braam() {
+    const c = ac(); if (!c) return;
+    const t = c.currentTime;
+    const f = c.createBiquadFilter(), g = c.createGain();
+    f.type = 'lowpass';
+    f.frequency.setValueAtTime(160, t);
+    f.frequency.linearRampToValueAtTime(950, t + .5);
+    f.frequency.linearRampToValueAtTime(180, t + 3.2);
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(.32, t + .12);
+    g.gain.exponentialRampToValueAtTime(.0001, t + 3.6);
+    f.connect(g); g.connect(c.destination);
+    [32.7, 65.4, 98, 130.8].forEach(fr => {
+        const o = c.createOscillator();
+        o.type = 'sawtooth'; o.frequency.value = fr; o.detune.value = (Math.random() - .5) * 16;
+        o.connect(f); o.start(t); o.stop(t + 3.7);
+    });
+}
+
+function sfx(kind) {
+    try {
+        if (kind === 'click') tone(740, 0, .07, 'triangle', .05);
+        else if (kind === 'tick') tone(1046, 0, .05, 'sine', .05);
+        else if (kind === 'ok') { tone(523, 0, .5); tone(659, .12, .5); tone(784, .24, .8); }
+        else if (kind === 'bad') { tone(196, 0, .3, 'square', .04); tone(146, .14, .45, 'square', .04); }
+        else if (kind === 'braam') braam();
+    } catch (e) { /* Ton ist optional */ }
+}
+
+function toggleSound() {
+    S.sound = !S.sound; save();
+    $('sound-btn').textContent = S.sound ? '♪ Ton an' : '♪ Ton aus';
+    if (S.sound) sfx('click');
+}
+
+/* ============ Intro & Navigation ============ */
+function restartLines(root) {
+    root.classList.remove('skip');
+    root.querySelectorAll('.line').forEach(el => { el.style.animationName = 'none'; void el.offsetWidth; el.style.animationName = ''; });
+}
+
+function showIntro() {
+    const intro = $('intro');
+    intro.hidden = false;
+    intro.classList.remove('fade');
+    restartLines(intro);
+}
+
+function dive(e) {
+    e.stopPropagation();
+    // Startzeit nur für die Tauchzeit im Finale
+    if (!S.startedAt) { S.startedAt = Date.now(); save(); }
+    sfx('braam');
+    const intro = $('intro');
+    intro.classList.add('fade');
+    setTimeout(() => { intro.hidden = true; }, 800);
+}
+
+function go(id, silent) {
+    if (!silent) sfx('click');
+    document.querySelectorAll('.view').forEach(v => { v.hidden = v.id !== 'view-' + id; });
+    document.body.dataset.depth = id;
+    $('depth-text').textContent = DEPTHS[id];
+    if (id === 'home') renderHome();
+    if (LEVEL_LINES[id]) renderLevel(id);
+    window.scrollTo({ top: 0, behavior: silent ? 'auto' : 'smooth' });
+}
+
+function toggleHint(n) { sfx('click'); const h = $('hint-' + n); h.hidden = !h.hidden; }
+
+/* ============ ECHO bemerkt euch ============ */
+function notice(delta) {
+    S.notice = Math.max(0, Math.min(100, S.notice + delta));
+    save(); renderNotice();
+}
+function renderNotice() {
+    const n = S.notice;
+    $('meter-fill').style.width = Math.max(4, n) + '%';
+    $('meter-text').textContent = n >= 85 ? 'sie weiß es' : n >= 55 ? 'misstrauisch' : n >= 25 ? 'aufmerksam' : 'kaum';
+}
+
+/* ============ Darstellung ============ */
+function solvedCount() { return [1, 2, 3, 4].filter(n => S.solved[n]).length; }
+
+function renderHome() {
+    $('home-echo').textContent = S.kicked ? '„Guten Morgen. Passt gut auf euch auf.“' : HOME_LINES[solvedCount()];
+    [1, 2, 3, 4].forEach(n => {
+        const st = $('status-' + n);
+        st.textContent = S.solved[n] ? 'stabil · Code ' + CODES[n] : 'instabil';
+        st.classList.toggle('done', !!S.solved[n]);
+    });
+    $('finale-again').hidden = !S.kicked;
+}
+
+function renderLevel(n) {
+    $('echo-' + n).textContent = S.solved[n] ? LEVEL_LINES[n].after : LEVEL_LINES[n].before;
+    $('solved-' + n).hidden = !S.solved[n];
+}
+
+function echoBlock(text) {
+    return `<div class="echo"><div class="orb"></div><div><span class="label">ECHO</span><p class="echo-text">„${text}“</p></div></div>`;
+}
+function codeBlock(n) {
+    return `<div class="code-reveal"><span class="label">Code · Ebene ${n}</span><strong>${CODES[n]}</strong></div>`;
+}
+
+function solve(n, html) {
+    S.solved[n] = true;
+    notice(-10);
+    renderLevel(n);
+    showModal('ok', 'Ebene stabil', html + codeBlock(n) + echoBlock(LEVEL_LINES[n].after.slice(1, -1)), DEPTHS[n].split('· ')[1] + ' hält');
+}
+function fail(n, title, text) {
+    notice(12);
+    showModal('bad', 'Störung', `<p>${text}</p>` + echoBlock(LEVEL_LINES[n].wrong), title);
+}
+function incomplete(text) {
+    showModal('bad', 'Unvollständig', `<p>${text}</p>`, 'Noch nicht bereit');
+}
+
+/* ============ Modal & Seitenblatt ============ */
+function showModal(tone, kicker, html, title) {
+    const m = $('modal');
+    $('modal-card').className = 'modal ' + tone;
+    $('modal-kicker').textContent = kicker;
+    $('modal-title').textContent = title;
+    $('modal-body').innerHTML = html;
+    sfx(tone === 'ok' ? 'ok' : tone === 'bad' ? 'bad' : 'click');
+    m.hidden = false;
+    requestAnimationFrame(() => m.classList.add('open'));
+}
+function closeModal() {
+    const m = $('modal');
+    m.classList.remove('open');
+    setTimeout(() => { m.hidden = true; }, 300);
+}
+
+function openTerm(key) {
+    const [title, html] = TERMS[key];
+    showModal('info', 'Handbuch der Crew', `<div class="prose">${html}</div>`, title);
+}
+
+function openHelp(templateId, title) {
+    showModal('info', 'Hilfe der Crew', $(templateId).innerHTML, title);
+}
+
+function gateSVG(sym, inv, n, invIn) {
+    const ins = n === 1 ? [32] : [20, 44];
+    let s = '<svg viewBox="0 0 96 64" aria-hidden="true">';
+    ins.forEach(y => {
+        s += invIn ? `<path class="w" d="M4 ${y} H21"/><circle class="inv" cx="25.5" cy="${y}" r="4.5"/>` : `<path class="w" d="M4 ${y} H30"/>`;
+    });
+    s += `<rect class="g" x="30" y="8" width="36" height="48" rx="3"/><text class="gt" x="48" y="32" style="font-size:15px">${sym}</text>`;
+    s += inv ? '<circle class="inv" cx="70.5" cy="32" r="4.5"/><path class="w" d="M75 32 H92"/>' : '<path class="w" d="M66 32 H92"/>';
+    return s + '</svg>';
+}
+function miniTable(g) {
+    const rows = g.n === 1 ? ['0', '1'] : ['00', '01', '10', '11'];
+    const head = g.n === 1 ? '<th>A</th>' : '<th>A</th><th>B</th>';
+    return `<table class="mini-tt"><thead><tr>${head}<th class="accent">Q</th></tr></thead><tbody>` +
+        rows.map((r, i) => `<tr>${r.split('').map(b => `<td>${b}</td>`).join('')}<td class="accent">${g.t[i]}</td></tr>`).join('') +
+        '</tbody></table>';
+}
+
+// De Morgan als Schaltzeichen: negierter Ausgang = negierte Eingänge mit vertauschtem Gatter
+const DE_MORGAN_CARD = `<article class="term-entry dm">
+    <h4>Gesetze von De Morgan</h4>
+    <p class="small muted">Damit löst ihr verschachtelte Verneinungen auf.</p>
+    <div class="dm-law">
+        <div class="dm-row">${gateSVG('&amp;', true, 2)}<span class="dm-eq">=</span>${gateSVG('≥1', false, 2, true)}</div>
+        <span class="rule">${neg('A ∧ B')} = ${neg('A')} ∨ ${neg('B')}</span>
+        <p class="small muted">Ein NAND verhält sich wie ein ODER mit negierten Eingängen.</p>
+    </div>
+    <div class="dm-law">
+        <div class="dm-row">${gateSVG('≥1', true, 2)}<span class="dm-eq">=</span>${gateSVG('&amp;', false, 2, true)}</div>
+        <span class="rule">${neg('A ∨ B')} = ${neg('A')} ∧ ${neg('B')}</span>
+        <p class="small muted">Ein NOR verhält sich wie ein UND mit negierten Eingängen.</p>
+    </div>
+    <div class="dm-law">
+        <span class="rule">${neg(neg('A'))} = A</span>
+        <p class="small muted">Zwei Striche übereinander heben sich auf.</p>
+    </div>
+    <p><b>Merksatz: Strich brechen, Zeichen tauschen.</b> Der lange Strich zerfällt in einzelne Striche über jeder Variable – und aus ∧ wird ∨ (und umgekehrt).</p>
+</article>`;
+
+function openSheet(kind) {
+    sfx('click');
+    if (kind === 'karte') {
+        $('sheet-sub').textContent = 'Schaltzeichen nach DIN EN 60617';
+        $('sheet-title').textContent = 'Karte der Architektin';
+        $('sheet-body').innerHTML = `<article class="term-entry"><h4>Schreibweise</h4>${NOTATION}</article>` + GATES.map(g =>
+            `<article class="gate-card">${gateSVG(g.sym, g.inv, g.n)}<div><h4>${g.name}</h4><p class="mono small">${g.f}</p><p class="small muted">${g.note}</p>${miniTable(g)}</div></article>`
+        ).join('') + DE_MORGAN_CARD + `<article class="term-entry"><h4>${TERMS.din[0]}</h4><div>${TERMS.din[1]}</div></article>`;
+    } else {
+        $('sheet-sub').textContent = 'Was jedes Crew-Mitglied wissen muss';
+        $('sheet-title').textContent = 'Handbuch der Crew';
+        $('sheet-body').innerHTML = Object.keys(TERMS).filter(k => k !== 'din').map(k =>
+            `<article class="term-entry"><h4>${TERMS[k][0]}</h4><div>${TERMS[k][1]}</div></article>`
+        ).join('');
+    }
+    $('sheet').hidden = false;
+    $('sheet-back').hidden = false;
+    $('sheet').scrollTop = 0;
+}
+function closeSheet() { $('sheet').hidden = true; $('sheet-back').hidden = true; }
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeModal(); closeSheet(); }
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('toggle')) {
+        e.preventDefault();
+        e.target.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    }
+});
+
+/* ============ Ebene 1 · Die Fassade ============ */
+const SYM = { '': '?', and: '&', or: '≥1', xor: '=1' };
+const GATE_FN = { and: (a, b) => a & b, or: (a, b) => a | b, xor: (a, b) => a ^ b };
+const L1 = { A: 1, B: 1, C: 0, D: 0 };
+const L1G = { g1: '', g2: '', g3: '' };
+
+function l1Toggle(k) { L1[k] ^= 1; sfx('tick'); l1Render(); }
+function l1Gate(slot, v) { L1G[slot] = v; sfx('tick'); l1Render(); }
+
+// Rechnet mit den gewählten Gattern; ohne Auswahl bleibt das Signal unbekannt (null)
+function l1Run(slot, a, b) {
+    return L1G[slot] && a !== null && b !== null ? GATE_FN[L1G[slot]](a, b) : null;
+}
+
+function l1Render() {
+    const { A, B, C, D } = L1;
+    const dissonanz = l1Run('g1', B, C);
+    const alarm = l1Run('g2', dissonanz, D);
+    const q = l1Run('g3', A, alarm === null ? null : alarm ^ 1);
+    ['A', 'B', 'C', 'D'].forEach(k => { setOn('l1-' + k, L1[k]); $('l1-' + k + '-v').textContent = L1[k]; setOn('l1-w' + k, L1[k]); });
+    ['g1', 'g2', 'g3'].forEach(s => { $('l1-' + s + '-sym').textContent = SYM[L1G[s]]; });
+    setOn('l1-g1', dissonanz); setOn('l1-w1', dissonanz);
+    setOn('l1-g2', alarm); setOn('l1-w2', alarm);
+    setOn('l1-g3', q); setOn('l1-wq', q); setOn('l1-q', q); setOn('l1-qt', q);
+    $('l1-readout').textContent = q === null ? 'Wählt zuerst alle drei Gatter aus' : q ? 'Q = 1 · Die Tür ist offen' : 'Q = 0 · Die Tür bleibt zu';
+    $('l1-readout').classList.toggle('on', q === 1);
+}
+
+function check1() {
+    const a = [1, 2, 3, 4].map(i => checked('l1-' + i));
+    if (!L1G.g1 || !L1G.g2 || !L1G.g3 || a.includes(null)) {
+        return incomplete('Wählt alle drei Gatter aus und entscheidet für jeden der vier Wege, ob sich die Tür öffnet.');
+    }
+    const gatesOk = L1G.g1 === 'xor' && L1G.g2 === 'or' && L1G.g3 === 'and';
+    if (!gatesOk) {
+        fail(1, 'Die Schaltung passt nicht', 'Eure Schaltung bildet ECHOs Regeln noch nicht richtig ab. Prüft jedes Gatter einzeln im Simulator: Stellt zum Beispiel B = 1 und C = 0 ein. Meldet G1 dann eine 1, so wie es Regel 2 verlangt? Macht das für alle Zeilen und Regeln.');
+    } else if (a.join('') !== CODES[1]) {
+        fail(1, 'Die Projektionen drehen sich um', 'Eure Schaltung stimmt – aber mindestens ein Weg nicht. Übersetzt jeden Weg Wort für Wort in A, B, C und D, stellt alle vier Werte im Simulator ein und lest Q erst dann ab.');
+    } else {
+        solve(1, '<p>Ihr seid über die Schwelle, die Idee ist eine Ebene tiefer. Wer gesehen <em>und</em> gehört wird, wirkt wie ein Mensch unter Menschen. Auffällig ist nur, wer sich widersprüchlich verhält.</p>');
+    }
+}
+
+/* ============ Ebene 2 · Das Labyrinth ============ */
+function check2() {
+    const a = [1, 2, 3, 4].map(i => checked('l2-' + i));
+    if (a.includes(null)) return incomplete('Ordnet jedem der vier Gedanken ein Grundgatter zu.');
+    if (a.join('') === CODES[2]) {
+        solve(2, '<p>Der Ausgang des Labyrinths öffnet sich. Jede Treppe war am Ende nur ein einziges Gatter. Und Gedanke IV – weder Neugier noch Angst – hat einen Namen: Gleichgültigkeit. Genau das soll eure Idee verändern.</p>');
+    } else {
+        fail(2, 'Die Treppe führt im Kreis', 'Mindestens ein Gedanke ist falsch zugeordnet. Löst zuerst die äußere Verneinung mit De Morgan auf und vergleicht dann mit den Wahrheitstabellen der vier Türen.');
+    }
+}
+
+/* ============ Ebene 3 · Das Herz ============ */
+const L3_SOLL = [0, 0, 0, 0, 0, 1, 1, 0];
+const L3Q = Array(8).fill(null);
+
+function l3Build() {
+    $('l3-body').innerHTML = L3Q.map((_, i) => {
+        const v = (i >> 2) & 1, s = (i >> 1) & 1, e = i & 1;
+        return `<tr><td>${v}</td><td>${s}</td><td>${e}</td><td class="q"><button type="button" class="qbtn" id="l3-q${i}" onclick="l3Cell(${i})" aria-label="Q in Zeile ${i + 1}">?</button></td></tr>`;
+    }).join('');
+}
+function l3Cell(i) {
+    L3Q[i] = L3Q[i] === null ? 0 : L3Q[i] ^ 1;
+    sfx('tick');
+    const b = $('l3-q' + i);
+    b.textContent = L3Q[i];
+    b.classList.add('set');
+    b.classList.toggle('one', L3Q[i] === 1);
+}
+function l3Gates() {
+    sfx('tick');
+    $('l3-g1').textContent = SYM[$('l3-s1').value];
+    $('l3-g2').textContent = SYM[$('l3-s2').value];
+}
+
+function check3() {
+    const g1 = $('l3-s1').value, g2 = $('l3-s2').value;
+    if (L3Q.includes(null) || !g1 || !g2) return incomplete('Füllt alle acht Zeilen der Wahrheitstabelle aus und wählt für G1 und G2 ein Schaltzeichen.');
+    const tableOk = L3Q.every((v, i) => v === L3_SOLL[i]);
+    const gatesOk = g1 === 'xor' && g2 === 'and';
+    if (tableOk && gatesOk) {
+        solve(3, '<p>ECHOs Herz öffnet sich. Schaut euch die Q-Spalte für V = 1 an: <b class="mono">0 1 1 0</b>. Das ist die Wahrheitstabelle des XOR – eins von beiden, aber nicht beides.</p>');
+    } else if (!tableOk && !gatesOk) {
+        fail(3, 'ECHO bleibt verschlossen', 'Weder die Wahrheitstabelle noch die Schaltung stimmen. Beginnt mit dem Text: Was muss in jedem Fall erfüllt sein?');
+    } else if (!tableOk) {
+        fail(3, 'ECHO bleibt verschlossen', 'Die Schaltung stimmt – aber die Wahrheitstabelle noch nicht. Rechnet jede Zeile mit eurer Schaltung durch.');
+    } else {
+        fail(3, 'ECHO bleibt verschlossen', 'Die Wahrheitstabelle stimmt – aber die Schaltung noch nicht. Welches Gatter erzeugt genau eure Q-Spalte?');
+    }
+}
+
+/* ============ Ebene 4 · Der Kern ============ */
+const CHIPS = {
+    '7400': { sym: '&', inv: true, f: (a, b) => 1 - (a & b) },
+    '7408': { sym: '&', inv: false, f: (a, b) => a & b },
+    '7432': { sym: '≥1', inv: false, f: (a, b) => a | b },
+    '7486': { sym: '=1', inv: false, f: (a, b) => a ^ b }
+};
+const L4 = { R: 0, T: 0, E: 0 };
+const L4M = Array(8).fill(null);
+let chip = '7486';
+const soll4 = i => { const r = (i >> 2) & 1, t = (i >> 1) & 1, e = i & 1; return e & (r | t); };
+
+function l4Build() {
+    const rows = [...Array(8).keys()];
+    $('l4-row').innerHTML = '<option value="">Zeile wählen …</option>' +
+        rows.map(i => `<option value="${i}">R = ${(i >> 2) & 1} · G = ${(i >> 1) & 1} · M = ${i & 1}</option>`).join('');
+}
+
+function l4Toggle(k) { L4[k] ^= 1; sfx('tick'); l4Render(); }
+
+function l4Socket(v) {
+    chip = v;
+    L4M.fill(null);
+    sfx('tick');
+    $('l4-note').textContent = `Baustein ${v} eingelötet – Messprotokoll zurückgesetzt.`;
+    l4Render();
+}
+
+function l4Render() {
+    const c = CHIPS[chip];
+    const ic1 = c.f(L4.R, L4.T);
+    const w = ic1 & L4.E;
+    const idx = L4.R * 4 + L4.T * 2 + L4.E;
+    L4M[idx] = w;
+
+    ['R', 'T', 'E'].forEach(k => { setOn('l4-' + k, L4[k]); $('l4-' + k + '-v').textContent = L4[k]; setOn('l4-w' + k, L4[k]); });
+    $('l4-g1-sym').textContent = c.sym;
+    $('l4-inv').style.display = c.inv ? '' : 'none';
+    $('l4-ic1').textContent = 'IC1 · ' + chip;
+    setOn('l4-g1', ic1); setOn('l4-w1', ic1);
+    setOn('l4-g2', w); setOn('l4-wW', w); setOn('l4-w', w); setOn('l4-wt', w);
+    $('l4-readout').textContent = w ? 'S = 1 · ECHO schützt' : 'S = 0 · ECHO bleibt untätig';
+    $('l4-readout').classList.toggle('on', !!w);
+
+    $('l4-body').innerHTML = L4M.map((m, i) =>
+        `<tr class="${i === idx ? 'cur' : ''}"><td>${(i >> 2) & 1}</td><td>${(i >> 1) & 1}</td><td>${i & 1}</td><td>${soll4(i)}</td><td class="accent">${m === null ? '–' : m}</td></tr>`
+    ).join('');
+}
+
+function check4() {
+    const row = $('l4-row').value, ic = checked('l4-ic');
+    if (row === '' || !ic) return incomplete('Bestimmt die Fehlerzeile und den manipulierten Baustein.');
+    if (row !== '7') {
+        fail(4, 'Falsche Spur', 'In dieser Zeile stimmen Bauplan und Platine überein. Habt ihr alle acht Kombinationen gemessen?');
+    } else if (ic !== 'IC1') {
+        fail(4, 'Falsche Spur', 'Der Baustein, den ihr verdächtigt, arbeitet genau wie im Bauplan. Verfolgt das Signal in der Fehlerzeile Gatter für Gatter.');
+    } else if (chip !== '7432') {
+        fail(4, 'Der Schutz bleibt aus', 'Fehlerzeile und Baustein stimmen. Aber mit dem Chip, der jetzt im Sockel steckt, weicht die Platine noch vom Bauplan ab. Messt nach dem Einlöten erneut.');
+    } else {
+        solve(4, '<p>Der Original-Baustein 7432 sitzt wieder im Sockel. Mit dem XOR hätte ECHO niemanden geschützt, der um Hilfe ruft <em>und</em> gleichzeitig in Gefahr ist – genau dann, wenn es am meisten zählt.</p>');
+    }
+}
+
+/* ============ Der Kick ============ */
+function kickInput() {
+    let all = true;
+    for (let i = 1; i <= 4; i++) {
+        const v = $('k' + i).value.trim();
+        const ok = v === CODES[i] || v === OVERRIDE;
+        $('k' + i).classList.toggle('ok', ok);
+        setOn('kw' + i, ok);
+        all = all && ok;
+    }
+    setOn('kg', all); setOn('kwq', all); setOn('kq', all); setOn('kqt', all);
+    $('kick-btn').disabled = !all;
+    $('kick-state').textContent = all ? 'Alle Ebenen liefern 1 · Der Kick ist bereit' : 'Wartet auf alle vier Ebenen';
+    $('kick-state').classList.toggle('on', all);
+}
+
+function kick() {
+    if ($('kick-btn').disabled) return;
+    S.kicked = true;
+    S.finishedAt = S.finishedAt || Date.now();
+    S.notice = 100;
+    save();
+    renderNotice();
+    finale();
+}
+
+function finale() {
+    sfx('braam');
+    const f = $('finale');
+    const used = Math.floor(((S.finishedAt || Date.now()) - (S.startedAt || Date.now())) / 1000);
+    $('finale-time').textContent = fmt(Math.max(0, used));
+    f.hidden = false;
+    f.classList.remove('fade');
+    restartLines(f);
+    f.scrollTop = 0;
+}
+function closeFinale(e) {
+    e.stopPropagation();
+    const f = $('finale');
+    f.classList.add('fade');
+    setTimeout(() => { f.hidden = true; go('home', true); }, 800);
+}
+
+function resetRound() {
+    if (!confirm('Neue Runde starten? Der Fortschritt auf diesem Gerät wird gelöscht.')) return;
+    try { localStorage.removeItem(STORE_KEY); } catch (e) { /* ignorieren */ }
+    location.reload();
+}
+
+/* ============ Start ============ */
+load();
+$('sound-btn').textContent = S.sound ? '♪ Ton an' : '♪ Ton aus';
+// Grundgatter 1–4 für Ebene 2: AND, OR, NAND, NOR
+$('l2-ref').innerHTML = [GATES[0], GATES[1], GATES[3], GATES[4]]
+    .map((g, i) =>`<div class="gate-ref"><span class="label">${i + 1} · ${g.name.split(' · ').pop()}</span>${gateSVG(g.sym, g.inv, g.n)}${miniTable(g)}</div>`).join('');
+l1Render();
+l3Build();
+l4Build();
+l4Render();
+renderNotice();
+go('home', true);
+if (S.startedAt) $('intro').hidden = true;
+</script>
+</body>
+</html>
