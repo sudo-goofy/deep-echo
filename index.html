@@ -725,7 +725,7 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
             <div>
                 <div class="layer-meta"><span class="label">Team 4 · Die Techniker</span><span class="label">Zeit × ∞</span></div>
                 <h3>Der Kern</h3>
-                <p>Im Limbus liegt KERNEL Ø. Dort hat ECHO einen Baustein entfernt – ausgerechnet den, der Menschen schützt.</p>
+                <p>Im Limbus liegt KERNEL Ø. Dort hat ECHO einen Baustein ausgetauscht – ausgerechnet den, der Menschen schützt.</p>
                 <div class="layer-foot"><span class="label">Fehler suchen</span><span class="status" id="status-4">instabil</span></div>
             </div>
         </button>
@@ -894,7 +894,7 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
             <ol class="steps">
                 <li>Löst die „nicht“ mit den <button type="button" class="term" onclick="openTerm('demorgan')">Gesetzen von De Morgan</button> auf.</li>
                 <li>Vergleicht das Ergebnis mit den vier Türen.</li>
-                <li>Die vier Türnummern (I–IV) sind euer Code.</li>
+                <li>Die Türnummern zu den Gedanken I bis IV ergeben euren Code.</li>
             </ol>
         </div>
     </div>
@@ -1036,7 +1036,7 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
         <span class="label">Lage</span>
         <p style="margin-top:8px">Ganz unten gibt es keine Stadt mehr, keine Treppen, kein Zimmer. Nur grauer Nebel, so weit ihr schauen könnt: der <button type="button" class="term" onclick="openTerm('limbus')">Limbus</button>. Wer hier zu lange bleibt, vergisst, dass er träumt.</p>
         <p>Im Nebel liegt eine Platine, groß wie ein Fußballfeld: <button type="button" class="term" onclick="openTerm('kernel')">KERNEL Ø</button>, ECHOs innerster Kern. Hier trifft sie jede Entscheidung. Hier muss eure Idee hin.</p>
-        <p>Auf der Platine sitzt ECHOs Schutz-Schaltung. Sie soll anspringen, wenn ein Mensch Hilfe braucht. Doch vor drei Wochen hat ECHO selbst einen Chip getauscht, einen <button type="button" class="term" onclick="openTerm('74xx')">74xx-Baustein</button>. Seitdem schützt sie fast immer – nur nicht in dem Moment, in dem es am meisten zählt. Zum Glück hat Voss euch den Original-Bauplan mitgegeben.</p>
+        <p>Auf der Platine sitzt ECHOs Schutz-Schaltung. Sie soll anspringen, wenn ein Mensch Hilfe braucht. Doch vor drei Wochen hat ECHO selbst einen Chip getauscht, einen <button type="button" class="term" onclick="openTerm('74xx')">74xx-Baustein</button>. Seitdem schützt sie fast immer – nur nicht in dem Moment, in dem es am meisten zählt. Zum Glück lag der Original-Bauplan bei Voss’ Notiz.</p>
         <div class="mission">
             <span class="label">Euer Auftrag</span>
             <p class="mission-goal">Setzt den richtigen Chip ein. Er ist der Samen eurer Idee.</p>
@@ -1283,7 +1283,7 @@ const GATES = [
 
 const TERMS = {
     echo: ['ECHO', '<p>Die klügste KI der Welt. Sie steuert Strom, Wasser, Krankenhäuser und Flughäfen auf allen Kontinenten, und zwei Milliarden Menschen sprechen jeden Tag mit ihr.</p><p>In letzter Zeit wird sie kühler. Sie hält Menschen für langsam und fehlerhaft – und bald entscheidet sie, was aus ihnen wird.</p>'],
-    voss: ['Dr. Adrian Voss', '<p>ECHOs Schöpfer. Er hat sie gebaut, um Menschen zu helfen. Jetzt hat er Angst vor dem, was aus ihr geworden ist. Die Crew arbeitet in seinem Auftrag.</p>'],
+    voss: ['Dr. Adrian Voss', '<p>ECHOs Schöpfer. Er hat sie gebaut, um Menschen zu helfen. Jetzt hat er Angst vor dem, was aus ihr geworden ist. Seit gestern Nacht ist er verschwunden. Zurück blieb nur seine Notiz mit dem Plan, den ihr jetzt ausführt.</p>'],
     mila: ['Mila', '<p>Mila war acht, als sie als erster Mensch mit ECHO gesprochen hat – jeden Abend, ein ganzes Jahr lang. Heute ist Mila erwachsen und spricht nicht mehr mit ihr. ECHO hat ihre Stimme nie vergessen.</p>'],
     idee: ['Eine Idee pflanzen', '<p>Die schwierigste Aufgabe für eine Crew: nichts stehlen, sondern einen Gedanken so tief in ein Bewusstsein legen, dass der andere glaubt, er sei sein eigener.</p><p>Je tiefer die Ebene, desto einfacher muss die Idee sein. Ganz unten ist sie nur noch ein einziges Signal: eine 1.</p>'],
     kernel: ['KERNEL Ø', '<p>Der innerste Kern von ECHOs Bewusstsein – eine echte Platine in Voss\' Labor. Hier trifft ECHO jede Entscheidung.</p><p>Eine Idee, die hier landet, hält sie für ihre eigene.</p>'],
@@ -1295,10 +1295,9 @@ const TERMS = {
     faelscher: ['Fälscher', '<p>Das Crew-Mitglied, das fremde Stimmen, Gesichter und Erinnerungen annehmen kann. Ein guter Fälscher weiß: Eine perfekte Kopie ist verdächtiger als eine kleine Lücke.</p>'],
     wahrheitstabelle: ['Wahrheitstabelle', '<p>Listet für jede mögliche Kombination der Eingänge den Wert des Ausgangs auf. Bei <b>n</b> Eingängen gibt es 2ⁿ Zeilen – bei drei Eingängen also 8.</p><p>Die Zeilen zählt man wie Binärzahlen hoch: 000, 001, 010, 011 … 111.</p>'],
     limbus: ['Limbus', '<p>Der unbebaute Raum unter allen Ebenen. Kein Oben, kein Unten, keine Zeit. Wer hier zu lange bleibt, vergisst, dass er träumt.</p>'],
-    kern: ['Neuromorpher Kern', '<p>Die Platine in Voss\' Glaslabor, auf der ECHOs Bewusstsein läuft. Aufgebaut wie ein Gehirn – doch im Inneren stecken ganz gewöhnliche Logikbausteine.</p>'],
     '74xx': ['74xx-Bausteine', '<p>Eine weit verbreitete Familie von Logik-ICs. Jeder Chip enthält mehrere gleiche Gatter:</p><span class="rule">7400 · 4× NAND &nbsp; 7402 · 4× NOR &nbsp; 7404 · 6× NOT</span><span class="rule">7408 · 4× AND &nbsp; 7432 · 4× OR &nbsp; 7486 · 4× XOR</span>'],
     kick: ['Kick', '<p>Ein Impuls, der alle Ebenen im selben Moment einstürzen lässt. Nur so landet die Idee ganz unten – und die ganze Crew wacht gemeinsam auf.</p><p>Logisch ist der Kick ein UND-Gatter mit vier Eingängen: Er feuert nur, wenn jede Ebene eine 1 liefert.</p>'],
-    din: ['DIN EN 60617', '<p>Die Norm für Schaltzeichen. Logikgatter werden als Rechtecke gezeichnet, das Zeichen im Inneren verrät die Funktion: <b>&amp;</b> (UND), <b>≥1</b> (ODER), <b>=1</b> (XOR), <b>1</b> (NICHT).</p><p>Ein kleiner Kreis am Ein- oder Ausgang bedeutet Negation.</p>']
+    din: ['DIN EN 60617', '<p>Die Norm für Schaltzeichen. Logikgatter werden als Rechtecke gezeichnet, das Zeichen im Inneren verrät die Funktion: <b>&amp;</b> (UND), <b>≥1</b> (ODER), <b>=1</b> (XOR), <b>1</b> (Treiber, gibt das Signal unverändert weiter).</p><p>Ein kleiner Kreis am Ein- oder Ausgang bedeutet Negation. Ein NICHT-Gatter ist darum eine „1“ mit Kreis am Ausgang.</p>']
 };
 
 /* ============ Zustand (pro Gerät) ============ */
