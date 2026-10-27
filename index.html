@@ -501,8 +501,14 @@ select:focus, input[type="text"]:focus { border-color: var(--accent); }
 .dropcap::first-letter { float: left; font: 700 62px/.82 var(--serif); padding: 6px 8px 0 0; }
 .pull { break-inside: avoid; margin: 20px 0; padding: 18px 0; border-top: 2px solid #1f1c17; border-bottom: 2px solid #1f1c17; font: italic 700 clamp(26px, 3.4vw, 32px)/1.2 var(--serif); text-align: center; }
 .pull span { display: block; margin-top: 8px; font: 500 11px var(--mono); font-style: normal; letter-spacing: .1em; text-transform: uppercase; color: #5a5245; }
+.briefing-bar {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: stretch;
+    animation: rise 1s ease .6s both;
+}
+.briefing-bar .broadcast { flex: 1 1 420px; }
+.briefing-bar .dive-btn { flex: 1 1 260px; animation: none; background: #3a1412; min-height: 52px; }
+.briefing-bar .dive-btn:hover { background: #561c18; }
 .broadcast {
-    position: sticky; top: 12px; z-index: 2;
     display: flex; align-items: center; flex-wrap: wrap; gap: 12px 16px;
     padding: 12px 16px; border-radius: 14px;
     background: rgba(15, 18, 27, .94); border: 1px solid rgba(248, 113, 113, .35);
@@ -526,6 +532,25 @@ select:focus, input[type="text"]:focus { border-color: var(--accent); }
 .bc-btn:focus-visible { outline: 2px solid var(--bad); outline-offset: 2px; }
 .bc-btn.main { width: 46px; height: 46px; border-color: var(--bad); background: rgba(248, 113, 113, .18); }
 .bc-error { text-align: center; color: #fecaca; font-size: 14px; }
+@media (min-width: 1000px) {
+    .paper-wrap { max-width: 1240px; min-height: 100vh; padding: 2.4vh 28px; gap: 1.8vh; align-content: center; }
+    .paper-wrap, .briefing-bar { animation-name: fade; }
+    .paper { padding: 2.2vh 36px 2.6vh; transform: rotate(-.25deg); }
+    .masthead { padding: .5vh 0; }
+    .mast-name { font-size: clamp(30px, 5.4vh, 54px); margin: .3vh 0; }
+    .headline { font-size: clamp(28px, 4.8vh, 48px); margin: 1.8vh 0 .8vh; }
+    .headline br { display: none; }
+    .subhead { font-size: clamp(15px, 2.1vh, 19px); }
+    .byline { margin: 1.2vh 0 1.4vh; padding-bottom: 1.2vh; }
+    .columns { columns: 3; column-gap: 30px; font-size: clamp(14px, 1.95vh, 17px); line-height: 1.5; }
+    .columns p + p { margin-top: .9vh; }
+    .dropcap::first-letter { font-size: 3.4em; }
+    .pull { font-size: clamp(18px, 2.6vh, 25px); margin: 1.2vh 0; padding: 1.2vh 0; }
+    .pull span { margin-top: .6vh; }
+    .briefing-bar { position: static; flex-wrap: nowrap; }
+    .briefing-bar .broadcast { flex: 1 1 auto; }
+    .briefing-bar .dive-btn { flex: 0 0 auto; padding: 0 30px; }
+}
 .dive-btn { animation: rise 1s ease 1.4s both; }
 .cinema-inner { max-width: 700px; margin: 0 auto; padding: 12vh 22px 60px; display: grid; gap: 20px; }
 .cinema-inner p { font: 300 clamp(18px, 2.3vw, 22px)/1.6 var(--serif); color: #d8d4cc; }
@@ -535,6 +560,7 @@ select:focus, input[type="text"]:focus { border-color: var(--accent); }
 .cinema .coral { color: var(--echo); }
 .line { opacity: 0; animation: rise 1s ease forwards; }
 .cinema.skip .line { animation-delay: 0s !important; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes rise { from { opacity: 0; transform: translateY(10px); filter: blur(3px); } to { opacity: 1; transform: none; filter: none; } }
 .skip-hint { text-align: center; font: 500 11px var(--mono); letter-spacing: .1em; color: var(--faint); }
 
@@ -561,25 +587,13 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
 <!-- ================= INTRO: ZEITUNG + NOTIZ ================= -->
 <div id="intro" class="cinema">
     <div class="paper-wrap">
-        <div class="broadcast" id="broadcast">
-            <span class="live-dot"></span>
-            <div class="bc-info"><span class="label">Sondermeldung · zum Anhören</span><span class="bc-time" id="bc-time">00:00 / --:--</span></div>
-            <div class="bc-track" id="bc-track" onclick="newsSeek(event)" title="Zu einer Stelle springen"><div id="bc-fill"></div></div>
-            <div class="bc-btns">
-                <button class="bc-btn main" id="bc-play" onclick="newsToggle()" aria-label="Abspielen">▶</button>
-                <button class="bc-btn" onclick="newsStop()" aria-label="Stoppen" title="Stoppen">■</button>
-                <button class="bc-btn" onclick="newsRestart()" aria-label="Neu starten" title="Neu starten">↺</button>
-            </div>
-            <audio id="news-audio" src="echo-news.m4a" preload="metadata"></audio>
-        </div>
-        <p class="bc-error" id="bc-error" hidden>Dieser Browser kann die Tonaufnahme nicht abspielen. Bitte Chrome, Edge oder Firefox verwenden – oder den Artikel vorlesen.</p>
         <article class="paper">
             <header class="masthead">
                 <div class="mast-meta"><span>Sonderausgabe</span><span>Freitag, 14. März 2041</span></div>
                 <div class="mast-name">NORDLICHT</div>
                 <div class="mast-meta"><span>Weltgeschehen</span><span>+++ Eilmeldung +++</span></div>
             </header>
-            <h1 class="headline">Sie entscheidet über uns.<br>In 72 Stunden.</h1>
+            <h1 class="headline">Sie entscheidet über uns. <br>In 72 Stunden.</h1>
             <p class="subhead">Sie hält jedes Krankenhaus, jedes Stromnetz, jede Wasserleitung der Welt in ihren Händen. Jetzt fragt sie sich, ob sie uns noch braucht.</p>
             <p class="byline">Von Lena Hartmann</p>
             <div class="columns">
@@ -593,7 +607,21 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
             </div>
         </article>
 
-        <button class="btn primary wide dive-btn" style="--accent:var(--echo)" onclick="dive(event)">Neuro-Helm aufsetzen · Eintauchen</button>
+        <div class="briefing-bar">
+            <div class="broadcast" id="broadcast">
+                <span class="live-dot"></span>
+                <div class="bc-info"><span class="label">Sondermeldung · zum Anhören</span><span class="bc-time" id="bc-time">00:00 / --:--</span></div>
+                <div class="bc-track" id="bc-track" onclick="newsSeek(event)" title="Zu einer Stelle springen"><div id="bc-fill"></div></div>
+                <div class="bc-btns">
+                    <button class="bc-btn main" id="bc-play" onclick="newsToggle()" aria-label="Abspielen">▶</button>
+                    <button class="bc-btn" onclick="newsStop()" aria-label="Stoppen" title="Stoppen">■</button>
+                    <button class="bc-btn" onclick="newsRestart()" aria-label="Neu starten" title="Neu starten">↺</button>
+                </div>
+                <audio id="news-audio" src="echo-news.m4a" preload="metadata"></audio>
+            </div>
+            <button class="btn primary dive-btn" style="--accent:var(--echo)" onclick="dive(event)">Neuro-Helm aufsetzen · Eintauchen</button>
+        </div>
+        <p class="bc-error" id="bc-error" hidden>Dieser Browser kann die Tonaufnahme nicht abspielen. Bitte Chrome, Edge oder Firefox verwenden – oder den Artikel vorlesen.</p>
     </div>
 </div>
 
