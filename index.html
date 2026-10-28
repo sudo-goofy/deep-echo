@@ -773,13 +773,13 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
         <div class="task-head"><h3>Worauf ECHO achtet</h3><button class="hint-btn" onclick="openHelp('help-1', 'Wann wird ECHO misstrauisch?')">Hilfe: Wir kommen nicht weiter</button></div>
         <ol class="steps rules">
             <li><div><b>Der <button type="button" class="term" onclick="openTerm('anker')">Anker</button> muss halten (A).</b> Reißt er, fliegt ihr raus – die Tür bleibt zu.</div></li>
-            <li><div><b>Sehen (B) und Hören (C) müssen zusammenpassen.</b> Sonst meldet der <button type="button" class="term" onclick="openTerm('dissonanz')">Dissonanz-Detektor</button> eine 1.</div></li>
+            <li><div><b>Passen Sehen (B) und Hören (C) <em>nicht</em> zusammen, meldet der <button type="button" class="term" onclick="openTerm('dissonanz')">Dissonanz-Detektor</button> eine 1.</b> Wer gesehen, aber nicht gehört wird – oder umgekehrt –, ist verdächtig.</div></li>
             <li><div><b>Alarm</b> gibt es bei Dissonanz <em>oder</em> wenn jemand eine Projektion berührt (D).</div></li>
         </ol>
         <p class="mission-goal" style="margin:16px 0 0;font:400 18px/1.45 var(--serif)">Die Tür (Q) öffnet sich nur, wenn der Anker hält <em>und</em> es keinen Alarm gibt.</p>
 
         <template id="help-1">
-            <p>Wann passen Sehen und Hören zusammen – und wann nicht? So denkt ECHO:</p>
+            <p>Wann passen Sehen und Hören <em>nicht</em> zusammen? Genau dann meldet G1 eine 1. So denkt ECHO:</p>
             <div style="overflow-x:auto">
                 <table class="sense">
                     <thead><tr><th>ECHO sieht jemanden (B)</th><th>ECHO hört Schritte (C)</th><th>Was ECHO denkt</th><th>Verdächtig?</th></tr></thead>
@@ -840,7 +840,7 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
             </svg>
         </div>
         <div class="grid grid-3" style="margin-top:10px">
-            <label class="field"><span>G1 · Dissonanz (Sehen, Hören)</span>
+            <label class="field"><span>G1 · Dissonanz – 1 = Sehen und Hören passen nicht zusammen</span>
                 <select id="l1-s1" onchange="l1Gate('g1', this.value)"><option value="">Schaltzeichen wählen …</option><option value="and">&amp;  (UND)</option><option value="or">≥1  (ODER)</option><option value="xor">=1  (XOR)</option></select></label>
             <label class="field"><span>G2 · Alarm (Dissonanz, Berührung)</span>
                 <select id="l1-s2" onchange="l1Gate('g2', this.value)"><option value="">Schaltzeichen wählen …</option><option value="and">&amp;  (UND)</option><option value="or">≥1  (ODER)</option><option value="xor">=1  (XOR)</option></select></label>
@@ -856,7 +856,7 @@ footer .chips { display: flex; gap: 8px; flex-wrap: wrap; }
         <div class="hint" id="hint-1" hidden>
             <p><b>Tipp 1:</b> Jede Regel gehört zu einem Gatter. Achtet auf die kleinen Wörter „oder“ und „und“. Bei den Wegen ist jedes Signal entweder da (1) oder nicht da (0).</p>
             <button type="button" class="hint-more" id="hint-1-more" onclick="hint2('1')">Noch ein Tipp? (ECHO wird misstrauischer)</button>
-            <p class="hint2" id="hint-1-2" hidden><b>Tipp 2:</b> G2: Alarm bei Dissonanz <b>oder</b> Berührung. G3: Tür offen, wenn der Anker hält <b>und</b> kein Alarm ist. Für G1 spielt alle vier Fälle von Sehen und Hören durch: Wann wird ECHO misstrauisch? Sucht auf der ◇ Karte das Gatter mit genau dieser Wahrheitstabelle. Wege übersetzen: <b>hält / sieht / hört / streift</b> = 1 – <b>reißt / unsichtbar / lautlos / berührt niemanden</b> = 0.</p>
+            <p class="hint2" id="hint-1-2" hidden><b>Tipp 2:</b> G2: Alarm bei Dissonanz <b>oder</b> Berührung. G3: Tür offen, wenn der Anker hält <b>und</b> kein Alarm ist. Für G1 spielt alle vier Fälle von Sehen und Hören durch: Wann passen sie <em>nicht</em> zusammen? Dort muss G1 eine 1 melden. Sucht auf der ◇ Karte das Gatter mit genau dieser Wahrheitstabelle. Wege übersetzen: <b>hält / sieht / hört / streift</b> = 1 – <b>reißt / unsichtbar / lautlos / berührt niemanden</b> = 0.</p>
         </div>
         <div style="overflow-x:auto;margin-top:12px">
             <table>
@@ -1606,7 +1606,7 @@ function check1() {
     }
     const gatesOk = L1G.g1 === 'xor' && L1G.g2 === 'or' && L1G.g3 === 'and';
     if (!gatesOk) {
-        fail(1, 'Die Schaltung passt nicht', 'Eure Schaltung bildet ECHOs Regeln noch nicht richtig ab. Prüft jedes Gatter einzeln im Simulator: Stellt zum Beispiel B = 1 und C = 0 ein. Meldet G1 dann eine 1, so wie es Regel 2 verlangt? Macht das für alle Zeilen und Regeln.');
+        fail(1, 'Die Schaltung passt nicht', 'Eure Schaltung bildet ECHOs Regeln noch nicht richtig ab. Prüft jedes Gatter einzeln im Simulator: Stellt zum Beispiel B = 1 und C = 0 ein. Sehen und Hören passen dann nicht zusammen – meldet G1 eine 1? Macht das für alle Zeilen und Regeln.');
     } else if (a.join('') !== CODES[1]) {
         fail(1, 'Die Projektionen drehen sich um', 'Eure Schaltung stimmt – aber mindestens ein Weg nicht. Übersetzt jeden Weg Wort für Wort in A, B, C und D, stellt alle vier Werte im Simulator ein und lest Q erst dann ab.');
     } else {
